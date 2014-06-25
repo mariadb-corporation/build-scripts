@@ -1,0 +1,16 @@
+deb http://ftp.fi.debian.org/debian/ squeeze main
+deb-src http://ftp.fi.debian.org/debian/ squeeze main
+
+deb http://security.debian.org/ squeeze/updates main
+deb-src http://security.debian.org/ squeeze/updates main
+
+# squeeze-updates, previously known as 'volatile'
+deb http://ftp.fi.debian.org/debian/ squeeze-updates main
+deb-src http://ftp.fi.debian.org/debian/ squeeze-updates main
+
+deb http://eng01.skysql.com/pre-repo/###target###/debian6.0.7_amd64-DataNode squeeze main
+deb http://mirror.netinch.com/pub/mariadb/repo/5.5/debian  squeeze main
+deb-src http://mirror.netinch.com/pub/mariadb/repo/5.5/debian  squeeze main
+deb http://repo.percona.com/apt  squeeze main
+deb-src http://repo.percona.com/apt  squeeze main
+

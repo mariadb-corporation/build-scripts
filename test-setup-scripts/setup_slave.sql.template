@@ -1,0 +1,6 @@
+change master to MASTER_HOST='192.168.122.###IP###';
+change master to MASTER_USER='repl';
+change master to MASTER_PASSWORD='repl';
+change master to MASTER_LOG_FILE='###LOG_FILE###';
+change master to MASTER_LOG_POS=###LOG_POS###;
+start slave;

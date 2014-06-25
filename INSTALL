@@ -1,0 +1,4 @@
+sudo apt-get install inadyn
+sudo apt-get install libvirt-bin qemu-kvm uml-utilities bridge-utils iproute openjdk-7-jdk bzr git
+sudo apt-get install qt5-default qttools5-dev-tools libbotan-1.10 gcc g++ libbotan1.10-dev make
+

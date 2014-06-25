@@ -1,0 +1,7 @@
+build_result=$?
+if [ $build_result -ne 0 ] ; then 
+	echo "Build ERROR!"
+	exit $build_result
+fi
+
+ 
