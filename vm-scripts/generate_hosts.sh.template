@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# $1 - last digits of IP
+# $2 - number of nodes
+
+IP_end=###IP_end###
+N=###N###
+
+for i in $(seq 1 $N)
+do
+	ip=`expr $IP_end + $i`
+	echo "$hosts 192.168.122.$ip node$i" >> /etc/hosts
+done
+

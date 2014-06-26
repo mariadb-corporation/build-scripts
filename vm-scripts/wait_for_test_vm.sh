@@ -1,6 +1,6 @@
 #!/bin/bash
 # $1 - image
-# $2 - last digits of IPP
+# $2 - last digits of IP
 
 x=1
 while [  "$x" -ne 0 ]; do

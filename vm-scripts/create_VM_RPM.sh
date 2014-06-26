@@ -17,6 +17,8 @@ while [  "$x" -ne 0 ]; do
 done
 
 scp -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/kvm/ifcfg/$2/* root@192.168.122.2:/etc/sysconfig/network-scripts/
+scp -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  /home/ec2-user/vm-scripts/generate_hosts.sh root@192.168.122.2:/root/
+ssh -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.2 "/root/generate_hosts.sh"
 ssh -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.2 "shutdown now"
 sleep 20
 cat /home/ec2-user/kvm/f | sudo socat STDIO UNIX-CONNECT:/tmp/socket002

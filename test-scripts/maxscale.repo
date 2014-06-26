@@ -1,0 +1,5 @@
+[maxscale]
+name=maxscale
+baseurl=http://jenkins.engskysql.com/repo/develop/centos6.5_x86_64
+enabled=1
+gpgcheck=false

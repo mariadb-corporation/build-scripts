@@ -13,6 +13,8 @@ N="$3"
 Master_IP=`expr $IP_end + 1`
 First_slave=`expr $IP_end + 2`
 
+#/home/ec2-user/test-setup-scripts/generate_hosts.sh > /home/ec2-user/test-setup-scripts/hosts
+
 x=`expr $IP_end + $N - 1`
 for i in $(seq $Master_IP $x)
 do
@@ -32,5 +34,6 @@ do
 	ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "/etc/init.d/mysql start --wsrep-cluster-address=gcomm://192.168.122.$Master_IP" &
 	sleep 10
 done
+
 
 disown
