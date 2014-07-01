@@ -25,7 +25,6 @@ echo "scp  -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o Stri
 ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP 'mkdir -p /home/ec2-user/workspace'
 
 scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r  ./* ec2-user@$IP:/home/ec2-user/workspace
-scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/yum_files/$image/* root@$IP:/etc/yum.repos.d/
 
 if [ $?	-ne 0 ] ; then
         echo "Error copying stuff to $image machine"
@@ -44,6 +43,7 @@ else
 	if [ "$image_type" == "RPM" ] ; then
 
 		echo "copying build script to $image machine"
+		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/yum_files/$image/* root@$IP:/etc/yum.repos.d/
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/build-scripts/build_rpm_local.sh  ec2-user@$IP:/home/ec2-user/
 		if [ $? -ne 0 ] ; then
 		        echo "Error copying build scripts to $image machine"
@@ -64,6 +64,7 @@ else
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/rpmbuild/SOURCES/* /home/ec2-user/pre-repo/$target/SRC
 	else
                 echo "copying build script to $image machine"
+		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/apt_files/$image/* root@$IP:/etc/apt/sources.list.d/
                 scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/build-scripts/build_deb_local.sh  ec2-user@$IP:/home/ec2-user/
                 if [ $? -ne 0 ] ; then
                         echo "Error copying build scripts to $image machine"
@@ -84,3 +85,5 @@ else
 fi
 
 echo "package building for $target done!"
+
+/home/ec2-user/build-scripts/create_remote_repo.sh $image 192.168.122.2 $target

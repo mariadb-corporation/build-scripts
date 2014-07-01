@@ -7,20 +7,18 @@ set -x
 
 cd /home/ec2-user/workspace
 
-if [ "$#" != "2" ]; then
-	echo "Not enough arguments, usage"
-	echo "./build_deb_local.sh path_to_.spec path_to_sources"
-	exit 1
-fi
+apt-get update
+apt-get install -y dpkg-dev
 
-source_dir=$2;
+build_req=`dpkg-checkbuilddeps  2>&1 | grep "Unmet build dependencies" | sed "s/dpkg-checkbuilddeps: Unmet build dependencies: //" | sed "s/([^)]*)//g"`
 
-build_req=`cat "$source_dir/debian/control" | grep "^Build-Depends:" | sed "s/Build-Depends://" | sed "s/([^)]*)//g"`
 if [ -n "$build_req" ];then
-        echo "installing BuildRequires"
-	apt-get update
-	apt-get install dpkg-dev 
-	apt-get install -y $build_req
+        echo "installing BuildRequires $build_req"
+#	apt-get update
+	apt-get install -y dpkg-dev 
+	#devscripts
+	#echo "y" | mk-build-deps --install $source_dir/debian/control
+	apt-get install -y --force-yes $build_req
         if [ $? -ne 0 ];then
         	echo "Error installing build dependecies, exiting!"
         	exit 1

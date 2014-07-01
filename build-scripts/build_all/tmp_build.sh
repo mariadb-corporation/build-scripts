@@ -16,3 +16,11 @@ if [ $build_result -ne 0 ] ; then
 fi
 
  
+/home/ec2-user/build-scripts/remote_build_new.sh ubuntu_server14.04_amd64 192.168.122.2 maxscale.spec . develop
+build_result=$?
+if [ $build_result -ne 0 ] ; then 
+	echo "Build ERROR!"
+	exit $build_result
+fi
+
+ 

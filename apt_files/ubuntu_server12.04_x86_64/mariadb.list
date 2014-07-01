@@ -1,0 +1,7 @@
+#deb http://repo.percona.com/apt precise main
+#deb-src http://repo.percona.com/apt precise main
+
+# http://mariadb.org/mariadb/repositories/
+#deb http://mirror.netinch.com/pub/mariadb/repo/5.5/ubuntu precise main
+#deb-src http://mirror.netinch.com/pub/mariadb/repo/5.5/ubuntu precise main
+
