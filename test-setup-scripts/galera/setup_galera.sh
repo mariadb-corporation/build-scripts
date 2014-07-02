@@ -15,11 +15,22 @@ First_slave=`expr $IP_end + 2`
 
 #/home/ec2-user/test-setup-scripts/generate_hosts.sh > /home/ec2-user/test-setup-scripts/hosts
 
+image_type=`cat /home/ec2-user/kvm/images/image_type | grep "$image_name".img | sed "s/$image_name.img//" | sed "s/ //g"`
+echo "image type is $image_type"
+if [ "$image_type" != "RPM" ] && [ "$image_type" != "DEB" ] ; then
+       	echo "unknown image type: should be RPM or DEB"
+        exit 1
+fi
+
 x=`expr $IP_end + $N - 1`
 for i in $(seq $Master_IP $x)
 do
 	scp -r -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/test-setup-scripts/galera/* root@192.168.122.$i:/root/
-	scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/yum_files/$image_name/* root@192.168.122.$i:/etc/yum.repos.d/
+        if [ "$image_type" != "RPM" ] ; then
+		scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/apt_files/$image_name/* root@192.168.122.$i:/etc/apt/sources.list.d/
+        else 
+		scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/yum_files/$image_name/* root@192.168.122.$i:/etc/yum.repos.d/
+        fi
 
 	ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "/root/install-packages.sh ; /root/firewall-setup.sh 192.168.122.$IP_end; /root/configure.sh 192.168.122.$i node$i"
 

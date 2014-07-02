@@ -13,7 +13,7 @@
 log-basename=master
 log-bin
 binlog-format=row
-server_id=104
+server_id=134
 
 
 # this is only for embedded server

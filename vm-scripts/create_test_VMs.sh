@@ -13,7 +13,7 @@ N="$3"
 x=`expr $IP_end + $N - 1`
 lock=0
 
-sed "s/###IP_end###/$IP_end/"  /home/ec2-user/vm-scripts/generate_hosts.sh.template | sed "s/###N###/$N/" > /home/ec2-user/vm-scripts/generate_hosts.sh
+sed "s/###IP_end###/$IP_end/"  /home/ec2-user/vm-scripts/generate_hosts.sh.template | sed "s/###N###/$x/" > /home/ec2-user/vm-scripts/generate_hosts.sh
 chmod a+x /home/ec2-user/vm-scripts/generate_hosts.sh
 
 for i in $(seq $IP_end $x)
@@ -33,6 +33,6 @@ else
 		cp  /home/ec2-user/kvm/images/$image.img /home/ec2-user/test-machines/test_vm_192.168.122.$i.img
 		/home/ec2-user/vm-scripts/create_VM.sh /home/ec2-user/test-machines/test_vm_192.168.122.$i.img 192.168.122.$i /home/ec2-user/KEYS/$image $image
 	done
-	/home/ec2-user/vm-scripts/start_test_VMs.sh $IP_end $N
+	/home/ec2-user/vm-scripts/start_test_VMs_quick.sh $IP_end $N
 	/home/ec2-user/vm-scripts/wait_for_test_vm.sh $image $IP_end
 fi

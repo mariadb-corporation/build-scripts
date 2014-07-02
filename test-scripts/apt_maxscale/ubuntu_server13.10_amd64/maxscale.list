@@ -1,0 +1,1 @@
+deb [arch=amd64] http://jenkins.engskysql.com/repo/###target###/ubuntu_server13.10_amd64 saucy main

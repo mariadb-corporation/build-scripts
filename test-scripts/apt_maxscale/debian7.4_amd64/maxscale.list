@@ -1,0 +1,1 @@
+deb [arch=amd64] http://jenkins.engskysql.com/repo/###target###/debian7.4_amd64 wheezy main

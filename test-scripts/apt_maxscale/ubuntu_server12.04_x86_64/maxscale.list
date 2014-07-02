@@ -1,0 +1,3 @@
+deb [arch=amd64] http://jenkins.engskysql.com/repo/###target###/ubuntu_server12.04_x86_64 precise main
+
+
