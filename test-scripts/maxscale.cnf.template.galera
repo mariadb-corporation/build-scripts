@@ -27,8 +27,8 @@ threads=1
 type=monitor
 module=galeramon
 servers=server1,server2,server3,server4
-user=repl
-passwd=repl
+user=skysql
+passwd=skysql
 
 # A series of service definition
 #
@@ -49,16 +49,16 @@ passwd=repl
 type=service
 router=readwritesplit
 servers=server1,server2,server3,server4
-user=repl
-passwd=repl
+user=skysql
+passwd=skysql
 
 [Read Connection Router]
 type=service
 router=readconnroute
 router_options=slave
 servers=server1,server2,server3,server4
-user=repl
-passwd=repl
+user=skysql
+passwd=skysql
 
 [HTTPD Router]
 type=service

@@ -21,7 +21,7 @@ do
 	sed -i "s/###server_IP_$i###/192.168.122.$ip/"  /home/ec2-user/test-scripts/MaxScale.cnf
 done
 
-scp -i /home/ec2-user/KEYS/$image -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /home/ec2-user/test-scripts/MaxScale.cnf root@192.168.122.$IP_end:/usr/local/sbin/MaxScale/etc/
-ssh -i /home/ec2-user/KEYS/$image -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.122.$IP_end "/usr/local/sbin/bin/maxkeys /usr/local/sbin/MaxScale/etc/.secrets"
-ssh -i /home/ec2-user/KEYS/$image -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.122.$IP_end "/usr/local/sbin/bin/maxscale -c /usr/local/sbin/MaxScale/" &
-disown
+max_dir="/usr/local/skysql/maxscale/"
+scp -i /home/ec2-user/KEYS/$image -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /home/ec2-user/test-scripts/MaxScale.cnf root@192.168.122.$IP_end:$max_dir/etc/
+ssh -i /home/ec2-user/KEYS/$image -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.122.$IP_end "$max_dir/bin/maxkeys $max_dir/etc/.secrets"
+ssh -i /home/ec2-user/KEYS/$image -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.122.$IP_end "/etc/init.d/maxscale start"

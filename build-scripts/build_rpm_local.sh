@@ -89,6 +89,10 @@ rpmbuild -v -bs --nodeps --clean SPECS/$name-${version}-${release}.spec --buildr
 yum clean all
 yum-builddep -y  /home/ec2-user/rpmbuild/SRPMS/$name-${version}-${release}.src.rpm
 
+# hack to make linking to libmysqld static
+rm /usr/lib64/libmysqld.so.18
+rm /usr/lib64/libmysqld.so
+
 echo "Building RPM"
 rpmbuild -v -ba --clean SPECS/$name-${version}-${release}.spec --buildroot $old_pwd/rpm/
 if [ $? -ne 0 ]; then
