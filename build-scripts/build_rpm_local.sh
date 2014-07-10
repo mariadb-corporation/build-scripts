@@ -17,7 +17,14 @@ if [ "$#" != "2" ]; then
 	exit 1
 fi
 
-yum install -y rpm-build createrepo yum-utils
+yum --version
+if [ $? != 0 ] ; then
+	zypper -n install rpm-build
+	zy=1
+else
+	yum install -y rpm-build createrepo yum-utils
+	zy=0
+fi
 
 source_dir=$2;
 
@@ -41,19 +48,6 @@ fi
 echo "name:"$name":"
 echo "version:"$version":"
 echo "release:"$release":"
-
-#build_req=`cat "$1" | grep "^BuildRequires:" | sed "s/BuildRequires://"`
-#if [ -n "$build_req" ];then
-#        echo "installing BuildRequires: $build_req"
-#	yum clean all
-#	yum install -y $build_req
-#        if [ $? -ne 0 ];then
-#        	echo "Error installing build dependecies, exiting!"
-#        	exit 1
-#	fi
-#fi
-#yum clean all
-#yum-builddep -y $1
 
 cd ..
 rm -rf rpmbuild
@@ -85,9 +79,15 @@ fi
 old_pwd=`pwd`
 rm -rf rpm
 cd ../rpmbuild/
-rpmbuild -v -bs --nodeps --clean SPECS/$name-${version}-${release}.spec --buildroot $old_pwd/rpm/
-yum clean all
-yum-builddep -y  /home/ec2-user/rpmbuild/SRPMS/$name-${version}-${release}.src.rpm
+
+if [ $zy == 0 ] ; then
+	rpmbuild -v -bs --nodeps --clean SPECS/$name-${version}-${release}.spec --buildroot $old_pwd/rpm/
+	yum clean all
+	yum-builddep -y  /home/ec2-user/rpmbuild/SRPMS/$name-${version}-${release}.src.rpm
+else
+	build_dep=`rpmbuild -v -ba --clean SPECS/$name-${version}-${release}.spec --buildroot $old_pwd/rpm/ 2>&1 | grep "is needed" | sed "s/is needed by .*$g//" `
+	zypper -n install $build_dep
+fi
 
 # hack to make linking to libmysqld static
 rm /usr/lib64/libmysqld.so.18

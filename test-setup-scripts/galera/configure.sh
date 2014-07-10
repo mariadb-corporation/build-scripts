@@ -51,7 +51,7 @@ fi
 
 # Creating MariaDB configuration file
 hostname=$(uname -n)
-if [[ "$linux_name" == "CentOS" ]]; then
+if [[ "$linux_name" == "CentOS" || "$linux_name" == "Fedora" ]]; then
         sed -e "s/###NODE-ADDRESS###/$privateip/g" \
                 -e "s/###NODE-NAME###/$nodename/g" \
                 -e "s/###REP-USERNAME###/$rep_username/g" \
@@ -104,7 +104,7 @@ fi
 
 /etc/init.d/mysql stop
 
-if [[ "$linux_name" == "CentOS" ]]; then
+if [[ "$linux_name" == "CentOS" || "$linux_name" == "Fedora" ]]; then
         my_cnf_path="/etc/my.cnf"
 elif [[ "$linux_name" == "Debian" || "$linux_name" == "Ubuntu" ]]; then
         my_cnf_path="/etc/mysql/my.cnf"
@@ -125,7 +125,7 @@ else
 fi
 
 # Disabling mysqld auto startup on boot
-if [[ "$linux_name" == "CentOS" ]]; then
+if [[ "$linux_name" == "CentOS" || "$linux_name" == "Fedora" ]]; then
 	chkconfig --del mysql
 elif [[ "$linux_name" == "Debian" || "$linux_name" == "Ubuntu" ]]; then
 	update-rc.d -f mysql remove

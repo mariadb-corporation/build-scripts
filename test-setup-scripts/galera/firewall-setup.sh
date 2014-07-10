@@ -71,7 +71,7 @@ if [[ $? == 0 ]]; then
 		iptables -I INPUT -p tcp --dport 4442 -j ACCEPT -m state --state NEW
 		iptables -I INPUT -p tcp --dport 6444 -j ACCEPT -m state --state NEW
 	fi
-	if [[ "$linux_name" == "CentOS" ]]; then
+	if [[ "$linux_name" == "CentOS" || "$linux_name" == "Fedora" ]]; then
                 service iptables save
                 # Restart iptables if it is already running
                 if service iptables status > /dev/null ; then
@@ -85,7 +85,7 @@ if [[ $? == 0 ]]; then
 fi
 
 # Disable selinux
-if [[ "$linux_name" == "CentOS" ]]; then
+if [[ "$linux_name" == "CentOS" || "$linux_name" == "Fedora" ]]; then
         if [[ -d /etc/selinux ]]; then
                 setenforce 0
                 sed -e 's/SELINUX=.*/SELINUX=permissive/' < /etc/selinux/config \

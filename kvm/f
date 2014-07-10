@@ -1,0 +1,4 @@
+{ "execute": "qmp_capabilities" }
+{ "execute": "quit" }
+
+

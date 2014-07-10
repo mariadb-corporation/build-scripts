@@ -1,0 +1,9 @@
+DEVICE=eth1
+HWADDR=DE:AD:BE:EF:4A:###mac###
+TYPE=Ethernet
+UUID=907a0355-af4d-4596-bf33-30ac84e2bdd0
+ONBOOT=yes
+NM_CONTROLLED=yes
+BOOTPROTO=static
+IPADDR=192.168.122.###IP###
+

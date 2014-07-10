@@ -28,7 +28,7 @@ set -x
 
 . /root/detect_distro.sh
 
-if [[ "$linux_name" == "CentOS" ]]; then
+if [[ "$linux_name" == "CentOS" || "$linux_name" == "Fedora" ]]; then
         # Installing MariaDB packages
         yum -y clean all
 	yum install -y wget 

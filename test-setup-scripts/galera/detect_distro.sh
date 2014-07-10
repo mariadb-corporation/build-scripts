@@ -7,6 +7,8 @@ release_info==$(cat /etc/*-release 2>/dev/null)
                 distro_type="ubuntu"; 
         elif [[ $(echo "$release_info" | grep 'Debian') != "" ]]; then 
                 distro_type="debian"; 
+	elif [[ $(echo "$release_info" | grep 'Fedora') != "" ]]; then 
+		distro_type="fedora";
         fi;  
 
 
@@ -31,6 +33,13 @@ case "$distro_type" in
                 distro_version=$(release_info=$(cat /etc/*-release); \
                         [[ "$release_info" =~ [[:space:]]*([0-9]*\.[0-9]*) ]] && echo ${BASH_REMATCH[1]})
                 ;;
+        "fedora")
+                linux_name="Fedora"
+                repoArch=""
+                distro_version=$(release_info=$(cat /etc/*-release); \
+                        [[ "$release_info" =~ [[:space:]]*([0-9]*\.[0-9]*) ]] && echo ${BASH_REMATCH[1]})
+                ;;
+
         "debian")
                 linux_name="Debian"
                 repoArch=""

@@ -13,7 +13,7 @@ N="$3"
 x=`expr $IP_end + $N - 1`
 lock=0
 
-sed "s/###IP_end###/$IP_end/"  /home/ec2-user/vm-scripts/generate_hosts.sh.template | sed "s/###N###/$x/" > /home/ec2-user/vm-scripts/generate_hosts.sh
+sed "s/###IP_end###/$IP_end/"  /home/ec2-user/vm-scripts/generate_hosts.sh.template | sed "s/###N###/$N/" > /home/ec2-user/vm-scripts/generate_hosts.sh
 chmod a+x /home/ec2-user/vm-scripts/generate_hosts.sh
 
 for i in $(seq $IP_end $x)
