@@ -19,10 +19,18 @@ scp -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  /home/ec2
 ssh -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.2 "/root/generate_hosts.sh"
 ssh -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.2 "rm /root/generate_hosts.sh"
 
-
+dist_pref=""
 cat /home/ec2-user/test-machines/image_name_$2 | grep "fedora"
 if [ $? == 0 ] ; then
-	scp -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/kvm/ifcfg-fedora/$2/* root@192.168.122.2:/etc/sysconfig/network-scripts/
+	dist_pref="fedora"
+fi
+cat /home/ec2-user/test-machines/image_name_$2 | grep "centos7"
+if [ $? == 0 ] ; then
+        dist_pref="centos7"
+fi
+
+if [ "$dist_pref" != "" ]; then
+	scp -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/kvm/ifcfg-$dist_pref/$2/* root@192.168.122.2:/etc/sysconfig/network-scripts/
 	ssh -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.2 "shutdown now"
 else
 	cat /home/ec2-user/test-machines/image_name_$2 | grep -i "suse"

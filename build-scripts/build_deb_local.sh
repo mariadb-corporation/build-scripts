@@ -24,6 +24,6 @@ if [ -n "$build_req" ];then
         	exit 1
 	fi
 fi
-rm /usr/lib/x86_64-linux-gnu/libmysqld.so
-rm /usr/lib/x86_64-linux-gnu/libmysqld.so.18
+mkdir -p /usr/lib/x86_64-linux-gnu/dynlib
+mv /usr/lib/x86_64-linux-gnu/libmysqld.so* /usr/lib/x86_64-linux-gnu/dynlib/
 dpkg-buildpackage -uc -us

@@ -37,7 +37,12 @@ do
                         dir="/etc/my.cnf.d/"
 		else
 			scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/yum_files/$image_name/* root@192.168.122.$i:/etc/yum.repos.d/
-			ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'yum clean all; yum install -y MariaDB-server MariaDB-client'
+			echo $1 | grep -i "centos7"
+			if [ $? == 0 ] ; then
+				ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'yum clean all; yum install -y mariadb-server mariadb'
+			else
+				ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'yum clean all; yum install -y MariaDB-server MariaDB-client'
+			fi 
 			dir="/etc/my.cnf.d/"
 		fi
 	fi
@@ -56,7 +61,12 @@ do
         ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'iptables -I INPUT -p tcp -m tcp --dport 6444 -j ACCEPT'
         ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'iptables -I INPUT -p tcp --dport 6444 -j ACCEPT -m state --state NEW'
 
-	ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i '/etc/init.d/mysql restart'
+	echo $1 | grep -i "centos7"
+        if [ $? != 0 ] ; then
+		ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i '/etc/init.d/mysql restart'
+	else
+		ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'systemctl start mariadb.service'
+	fi
 
 done
 

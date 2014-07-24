@@ -9,7 +9,7 @@ target=$3
 #/home/ec2-user/kvm/start_build_VM.sh $image
 
 echo "cleaning $1"
-ssh -i /home/ec2-user/KEYS/$image root@$IP -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "rm -rf /home/ec2-user/*"
+ssh -i /home/ec2-user/KEYS/$image root@$IP -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "rm -rf /home/ec2-user/dest; rm -rf /home/ec2-user/src;"
 
 
 echo " creating dirs on $1"

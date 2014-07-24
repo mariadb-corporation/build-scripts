@@ -90,8 +90,8 @@ else
 fi
 
 # hack to make linking to libmysqld static
-rm /usr/lib64/libmysqld.so.18
-rm /usr/lib64/libmysqld.so
+mkdir -p /usr/lib64/dynlib/
+mv /usr/lib64/libmysqld.so*  /usr/lib64/dynlib/
 
 echo "Building RPM"
 rpmbuild -v -ba --clean SPECS/$name-${version}-${release}.spec --buildroot $old_pwd/rpm/

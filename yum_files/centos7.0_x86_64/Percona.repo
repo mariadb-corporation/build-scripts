@@ -1,0 +1,6 @@
+[percona]
+name = CentOS $releasever - Percona
+baseurl=http://repo.percona.com/centos/6/os/x86_64/
+enabled = 0
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-percona
+gpgcheck = 0
