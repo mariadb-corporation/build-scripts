@@ -13,7 +13,7 @@
 log-basename=master
 log-bin
 binlog-format=row
-server_id=2
+server_id=3000
 port=3000
 data=/home/ec2-user/data1/
 socket=/tmp/mysql1.sock

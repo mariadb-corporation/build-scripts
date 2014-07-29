@@ -1,0 +1,1 @@
+mysql -P 3000 -h localhost -S /tmp/mysql1.sock
