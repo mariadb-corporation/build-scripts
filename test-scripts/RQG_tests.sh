@@ -26,6 +26,7 @@ bzr branch lp:randgen
 cd randgen
 
 perl gentest.pl \
-   --dsn=dbi:mysql:host=192.168.122.105:port=4008:user=skysql:password=skysql:database=test \
+   --dsn1=dbi:mysql:host=192.168.122.105:port=4008:user=skysql:password=skysql:database=test \
+   --dsn2=dbi:mysql:host=192.168.122.111:user=skysql:password=skysql:database=test \
    --gendata=conf/examples/example.zz \
    --grammar=conf/examples/example.yy

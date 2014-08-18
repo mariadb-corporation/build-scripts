@@ -69,5 +69,9 @@ else
        	echo "##RELEASE_TAG## is not found. .spec unchanged"
 fi
 
+if [ $gcov == "yes" ] ; then
+	patch -p1 < gcov.diff
+fi
+
 /home/ec2-user/build-scripts/build_packages_one.sh $spec_name . $target $image
 
