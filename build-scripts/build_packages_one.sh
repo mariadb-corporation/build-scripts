@@ -5,12 +5,13 @@
 # $2 - path to src
 # $3 - target 
 # $4 - image
+# $5 - cmake (yes/no)
 
 set -x
 
 mkdir -p /home/ec2-user/pre-repo/$3/SRC
 
-/home/ec2-user/build-scripts/remote_build_new.sh $4 192.168.122.2 $1 $2 $3
+/home/ec2-user/build-scripts/remote_build_new.sh $4 192.168.122.2 $1 $2 $3 $5
 build_result=$?
 if [ $build_result -ne 0 ] ; then
         echo "Build ERROR!"

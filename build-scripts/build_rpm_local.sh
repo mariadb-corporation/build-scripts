@@ -5,13 +5,15 @@
 
 set -x
 
+cmake=$3
+
 cd /home/ec2-user/workspace
 
 if [ -f  /home/ec2-user/parameters ]; then
 	. /home/ec2-user/parameters
 fi
 
-if [ "$#" != "2" ]; then
+if [[ "$#" != "2" && "$#" != "3" ]]; then
 	echo "Not enough arguments, usage"
 	echo "./build_rpm.sh path_to_.spec path_to_sources"
 	exit 1
@@ -49,6 +51,13 @@ echo "name:"$name":"
 echo "version:"$version":"
 echo "release:"$release":"
 
+if [ "$cmake" == "yes" ] ; then
+   yum clean all 
+   yum install -y gcc gcc-c++ ncurses-devel bison glibc-devel cmake28 libgcc perl make libtool openssl-devel libaio libaio-devel librabbitmq-devel libedit-devel MariaDB-devel MariaDB-server
+   cmake28 .  -DSTATIC_EMBEDDED=Y
+   make
+   make package
+else
 cd ..
 rm -rf rpmbuild
 mkdir -p rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
@@ -57,49 +66,50 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-#tar -zcvf rpmbuild/SOURCES/${name}-${version}-${release}.tar.gz  workspace/* --transform s/workspace/${name}-${version}/
-mv workspace ${name}-${version}
-tar -zcvf rpmbuild/SOURCES/${name}-${version}-${release}.tar.gz  ${name}-${version}/* 
-mv ${name}-${version} workspace
+	#tar -zcvf rpmbuild/SOURCES/${name}-${version}-${release}.tar.gz  workspace/* --transform s/workspace/${name}-${version}/
+	mv workspace ${name}-${version}
+	tar -zcvf rpmbuild/SOURCES/${name}-${version}-${release}.tar.gz  ${name}-${version}/* 
+	mv ${name}-${version} workspace
 
 
-if [ $? -ne 0 ]; then
-        echo "tar failed to create source tarball"
-        exit 1
+	if [ $? -ne 0 ]; then
+        	echo "tar failed to create source tarball"
+	        exit 1
+	fi
+
+	cd workspace
+
+	cp "$1" ../rpmbuild/SPECS/$name-${version}-${release}.spec
+	if [ $? -ne 0 ]; then
+        	echo "Can't copy .spec"
+	        exit 1
+	fi
+
+	old_pwd=`pwd`
+	rm -rf rpm
+	cd ../rpmbuild/
+
+	if [ $zy == 0 ] ; then
+		rpmbuild -v -bs --nodeps --clean SPECS/$name-${version}-${release}.spec --buildroot $old_pwd/rpm/
+		yum clean all
+		yum-builddep -y  /home/ec2-user/rpmbuild/SRPMS/$name-${version}-${release}.src.rpm
+	else
+		build_dep=`rpmbuild -v -ba --clean SPECS/$name-${version}-${release}.spec --buildroot $old_pwd/rpm/ 2>&1 | grep "is needed" | sed "s/is needed by .*$g//" `
+		zypper -n install $build_dep
+	fi
+
+	# hack to make linking to libmysqld static
+	mkdir -p /usr/lib64/dynlib/
+	mv /usr/lib64/libmysqld.so*  /usr/lib64/dynlib/
+
+	echo "Building RPM"
+	rpmbuild -v -ba --clean SPECS/$name-${version}-${release}.spec --buildroot $old_pwd/rpm/
+	if [ $? -ne 0 ]; then
+        	echo "RPM build failed"
+	        exit 1
+	fi
+	echo "RPM build is done!"
+
+	cd ../workspace
+	cp -r ../rpmbuild .
 fi
-
-cd workspace
-
-cp "$1" ../rpmbuild/SPECS/$name-${version}-${release}.spec
-if [ $? -ne 0 ]; then
-        echo "Can't copy .spec"
-        exit 1
-fi
-
-old_pwd=`pwd`
-rm -rf rpm
-cd ../rpmbuild/
-
-if [ $zy == 0 ] ; then
-	rpmbuild -v -bs --nodeps --clean SPECS/$name-${version}-${release}.spec --buildroot $old_pwd/rpm/
-	yum clean all
-	yum-builddep -y  /home/ec2-user/rpmbuild/SRPMS/$name-${version}-${release}.src.rpm
-else
-	build_dep=`rpmbuild -v -ba --clean SPECS/$name-${version}-${release}.spec --buildroot $old_pwd/rpm/ 2>&1 | grep "is needed" | sed "s/is needed by .*$g//" `
-	zypper -n install $build_dep
-fi
-
-# hack to make linking to libmysqld static
-mkdir -p /usr/lib64/dynlib/
-mv /usr/lib64/libmysqld.so*  /usr/lib64/dynlib/
-
-echo "Building RPM"
-rpmbuild -v -ba --clean SPECS/$name-${version}-${release}.spec --buildroot $old_pwd/rpm/
-if [ $? -ne 0 ]; then
-        echo "RPM build failed"
-        exit 1
-fi
-echo "RPM build is done!"
-
-cd ../workspace
-cp -r ../rpmbuild .

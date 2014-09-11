@@ -1,8 +1,10 @@
-!/bin/bash
+#!/bin/bash
 
 # $1 - image name
 # $2 - last digits of IP
+# $3 - num of nodes
 
+#set -x
 image_name="$1"
 IP_end="$2"
 N="$3"

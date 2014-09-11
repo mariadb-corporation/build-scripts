@@ -5,6 +5,7 @@
 # $2 - tag or branch name or commit ID
 # $3 - target repository name
 # $4 - image
+# $5 - alternative dir
 
 set -x
 
@@ -15,14 +16,6 @@ image=$4
 target=`echo $target | tr -cd "[:print:]" `
 echo "target $target"
 
-num_of_specs=`ls -1 *.spec | wc -l`
-if [ $num_of_specs -ne 1 ]; then
-        echo "Error there is no or several .spec. Exiting"
-        exit 1
-fi
-spec_name=`ls *.spec`
-package_name=`echo ${spec_name%.*}`
-
 if [ "$source" == "TAG" ] ; then
 	git reset --hard $tag-$value
 fi
@@ -30,6 +23,7 @@ fi
 if [ "$source" == "BRANCH" ] ; then
 	git branch $value origin/$value
         git checkout $value
+	git pull
        	if [ $? -ne 0 ] ; then
 		echo "Error checkout branch $branch"
                 exit 12
@@ -46,6 +40,20 @@ fi
 
 commitID=`git log | head -1 | sed "s/commit //"`
 echo "commitID $commitID"
+
+if [ "$5" != "" ] ; then
+  cd $5
+fi
+
+num_of_specs=`ls -1 *.spec | wc -l`
+if [ $num_of_specs -ne 1 ]; then
+        echo "Error there is no or several .spec. Exiting"
+        exit 1
+fi
+spec_name=`ls *.spec`
+package_name=`echo ${spec_name%.*}`
+
+
 
 # checking .spec for ##VERSION_TAG## and replacing it with info from tag
 grep "##VERSION_TAG##" $spec_name > /dev/null
@@ -69,9 +77,11 @@ else
        	echo "##RELEASE_TAG## is not found. .spec unchanged"
 fi
 
-if [ $gcov == "yes" ] ; then
+if [ "$gcov" == "yes" ] ; then
 	patch -p1 < gcov.diff
 fi
 
-/home/ec2-user/build-scripts/build_packages_one.sh $spec_name . $target $image
+
+
+/home/ec2-user/build-scripts/build_packages_one.sh $spec_name . $target $image $cmake
 

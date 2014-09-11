@@ -7,6 +7,7 @@
 # $3 - .spec name
 # $4 - path to src
 # $5 - target 
+# $6 - cmake
 
 set -x
 
@@ -51,7 +52,7 @@ else
 		fi
 
 		echo "run build on $image"
-		ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  root@$IP /home/ec2-user/build_rpm_local.sh $3 $4
+		ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  root@$IP /home/ec2-user/build_rpm_local.sh $3 $4 $6
 		if [ $? -ne 0 ] ; then
 		        echo "Error build on $image"
 		        exit 4
@@ -61,6 +62,7 @@ else
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/rpmbuild/RPMS/noarch/* /home/ec2-user/pre-repo/$target/$image
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/rpmbuild/RPMS/i386/* /home/ec2-user/pre-repo/$target/$image
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/rpmbuild/RPMS/x86_64/* /home/ec2-user/pre-repo/$target/$image
+		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/workspace/*.rpm /home/ec2-user/pre-repo/$target/$image
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/rpmbuild/SOURCES/* /home/ec2-user/pre-repo/$target/SRC
 	else
                 echo "copying build script to $image machine"
@@ -72,7 +74,7 @@ else
                 fi
 
                 echo "run build on $image"
-                ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  root@$IP /home/ec2-user/build_deb_local.sh $3 $4
+                ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  root@$IP /home/ec2-user/build_deb_local.sh $3 $4 $6
                 if [ $? -ne 0 ] ; then
                         echo "Error build on $image"
                         exit 4
