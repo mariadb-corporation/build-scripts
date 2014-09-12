@@ -132,6 +132,10 @@ int check_com_insert(int *new_selects, int *new_inserts, int *selects, int *inse
   int i;
   int result = 0;
   for (i=0; i<NodesNum; i++) { 
+    if (new_inserts[i]-inserts[i] != 1) {
+	sleep(1);
+	get_global_status_allnodes(&new_selects[0], &new_inserts[0], NodesNum);
+    }
     if (new_inserts[i]-inserts[i] != 1) {result = 1; printf("INSERT query executed, but COM_INSERT increase is %d\n", new_inserts[i]-inserts[i]); }
     if (new_selects[i]-selects[i] != 0) {
       printf("INSERT query executed, but COM_SELECT increase is %d\n", new_selects[i]-selects[i]); 

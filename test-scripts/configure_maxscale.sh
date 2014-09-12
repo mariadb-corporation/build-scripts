@@ -10,6 +10,10 @@ IP_end=$2
 image=$1
 template=$3
 
+if [ -z $templae ] ; then
+  template="replication"
+fi
+
 cp /home/ec2-user/test-scripts/maxscale.cnf.template.$template /home/ec2-user/test-scripts/MaxScale.cnf
 if [ $? -ne 0 ] ; then
 	echo "error copying maxscale.cnf file"

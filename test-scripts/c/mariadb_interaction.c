@@ -42,13 +42,14 @@ int connect_all_nodes(MYSQL *nodes[], unsigned int IP_end, unsigned int NodesNum
 {
   unsigned int i;
   char ip1[15];
+  int ret=0;
   // Connecting to all nodes
   for (i=0; i<NodesNum; i++) {
     nodes[i] = mysql_init(NULL);
     if(nodes[i] == NULL)
     {
       fprintf(stdout, "Error: can't create MySQL-descriptor\n");
-      exit(2);
+      ret=2;
     }
 
     sprintf(ip1, "192.168.122.%d", i+IP_end+1);
@@ -63,10 +64,10 @@ int connect_all_nodes(MYSQL *nodes[], unsigned int IP_end, unsigned int NodesNum
                         0
                         ) ) {
       printf("Error: can't connect to database %s\n", mysql_error(nodes[i]));
-      return(2);
+      ret=2;
    }
   }
-  return(0);
+  return(ret);
 }
 
 
@@ -96,18 +97,24 @@ unsigned int get_conn_num(MYSQL *conn, char * ip, char * db)
     unsigned long long int i;
     unsigned int conn_num=0;
 
-    if(mysql_query(conn, "show processlist;") != 0)
+    printf("trying show processlist;\n");
+fflush(stdout);
+    if(mysql_query(conn, "show processlist;") != 0) {
          printf("Error: can't execute SQL-query: %s\n", mysql_error(conn));
-    res = mysql_store_result(conn);
-    if(res == NULL) printf("Error: can't get the result description\n");
+         conn_num = 0;
+    } else {
+    	printf("getting results\n");
+	fflush(stdout);
+	res = mysql_store_result(conn);
+   	 if(res == NULL) printf("Error: can't get the result description\n");
 
-//    printf("rows=%llu\n", mysql_num_rows(res));
-    num_fields = mysql_num_fields(res);
+	//    printf("rows=%llu\n", mysql_num_rows(res));
+    	num_fields = mysql_num_fields(res);
 
 
-    if(mysql_num_rows(res) > 0)
-    {
-      while((row = mysql_fetch_row(res)) != NULL) { 
+    	if(mysql_num_rows(res) > 0)
+    	{
+      	while((row = mysql_fetch_row(res)) != NULL) { 
 //        for (i = 0; i < num_fields; i++) {
 //          printf("%s\t", row[2]);
 //          printf("%s\t", row[3]);
@@ -120,9 +127,9 @@ unsigned int get_conn_num(MYSQL *conn, char * ip, char * db)
 //        }
 //        printf("\n"); 
         row_i++;
+      	}
       }
-    }
-
+   }
    return(conn_num);
 
 }
