@@ -10,7 +10,7 @@ IP_end=$2
 image=$1
 template=$3
 
-if [ -z $templae ] ; then
+if [ -z $template ] ; then
   template="replication"
 fi
 

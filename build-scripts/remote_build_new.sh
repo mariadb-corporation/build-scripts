@@ -45,6 +45,9 @@ else
 
 		echo "copying build script to $image machine"
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/yum_files/$image/* root@$IP:/etc/yum.repos.d/
+		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/vm_setup_scripts/$image.sh root@$IP:/home/ec2-user/
+		ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP /home/ec2-user/$image.sh
+
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/build-scripts/build_rpm_local.sh  ec2-user@$IP:/home/ec2-user/
 		if [ $? -ne 0 ] ; then
 		        echo "Error copying build scripts to $image machine"

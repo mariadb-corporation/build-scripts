@@ -53,8 +53,26 @@ echo "release:"$release":"
 
 if [ "$cmake" == "yes" ] ; then
    yum clean all 
-   yum install -y gcc gcc-c++ ncurses-devel bison glibc-devel cmake28 libgcc perl make libtool openssl-devel libaio libaio-devel librabbitmq-devel libedit-devel MariaDB-devel MariaDB-server
-   cmake28 .  -DSTATIC_EMBEDDED=Y
+   yum install -y gcc gcc-c++ ncurses-devel bison glibc-devel libgcc perl make libtool openssl-devel libaio libaio-devel librabbitmq-devel libedit-devel
+   yum install -y libedit-devel
+   yum install -y systemtap-sdt-devel
+   cmake_cmd="cmake"
+   cat /etc/redhat-release | grep "release 7"
+   if [ $? == 0 ] ; then
+	yum install -y mariadb-devel mariadb-embedded-devel  
+   else
+   	yum install -y MariaDB-devel MariaDB-server
+   fi
+   cat /etc/redhat-release | grep "release 6"
+   rs=$?
+   cat /etc/redhat-release | grep "release 5"
+   if [[ $? == 0 || $rs == 0 ]] ; then
+	echo "cmake is already manually installed"
+   else
+   	yum install -y $cmake_cmd
+   fi
+
+   $cmake_cmd .  -DSTATIC_EMBEDDED=Y
    make
    make package
 else
