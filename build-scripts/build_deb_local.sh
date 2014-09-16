@@ -5,14 +5,27 @@
 
 set -x
 
+cmake=$3
+
+
 cd /home/ec2-user/workspace
+
+
 
 apt-get update
 apt-get install -y dpkg-dev
 
-build_req=`dpkg-checkbuilddeps  2>&1 | grep "Unmet build dependencies" | sed "s/dpkg-checkbuilddeps: Unmet build dependencies: //" | sed "s/([^)]*)//g"`
+if [ "$cmake" == "yes" ] ; then
+  apt-get install -y cmake
+  apt-get install -y gcc g++ ncurses-dev bison build-essential libssl-dev libaio-dev libmariadbclient-dev  libmariadbd-dev mariadb-server perl make libtool librabbitmq-dev
+  cmake . -DSTATIC_EMBEDDED=Y --debug-output
+  make
+  make package
+  cp _CPack_Packages/Linux/DEB/*.deb ../
+else
+  build_req=`dpkg-checkbuilddeps  2>&1 | grep "Unmet build dependencies" | sed "s/dpkg-checkbuilddeps: Unmet build dependencies: //" | sed "s/([^)]*)//g"`
 
-if [ -n "$build_req" ];then
+  if [ -n "$build_req" ];then
         echo "installing BuildRequires $build_req"
 #	apt-get update
 	apt-get install -y dpkg-dev 
@@ -23,7 +36,8 @@ if [ -n "$build_req" ];then
         	echo "Error installing build dependecies, exiting!"
         	exit 1
 	fi
+  fi
+  mkdir -p /usr/lib/x86_64-linux-gnu/dynlib
+  mv /usr/lib/x86_64-linux-gnu/libmysqld.so* /usr/lib/x86_64-linux-gnu/dynlib/
+  dpkg-buildpackage -uc -us
 fi
-mkdir -p /usr/lib/x86_64-linux-gnu/dynlib
-mv /usr/lib/x86_64-linux-gnu/libmysqld.so* /usr/lib/x86_64-linux-gnu/dynlib/
-dpkg-buildpackage -uc -us

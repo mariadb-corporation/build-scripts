@@ -49,6 +49,7 @@ passwd=skysql
 type=service
 router=readwritesplit
 servers=server1,server2,server3,server4
+weightby=serversize_rws
 user=skysql
 passwd=skysql
 
@@ -115,6 +116,7 @@ address=###server_IP_1###
 port=3306
 protocol=MySQLBackend
 serversize=1
+serversize_rws=0
 
 [server2]
 type=server
@@ -122,6 +124,7 @@ address=###server_IP_2###
 port=3306
 protocol=MySQLBackend
 serversize=2
+serversize_rws=3
 
 [server3]
 type=server
@@ -129,6 +132,7 @@ address=###server_IP_3###
 port=3306
 protocol=MySQLBackend
 serversize=3
+serversize_rws=2
 
 [server4]
 type=server
@@ -136,3 +140,4 @@ address=###server_IP_4###
 port=3306
 protocol=MySQLBackend
 serversize=0
+serversize_rws=1
