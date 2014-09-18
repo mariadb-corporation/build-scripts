@@ -15,7 +15,7 @@ conn_node="$1"
 #echo "109:"
 #echo "show processlist;" | mysql -h 192.168.122.109 -uskysql -pskysql | grep "105"
 
-a=0
+echo "ok" > a
 
 for i in $(seq 106 109)
 do
@@ -23,13 +23,15 @@ do
 	res=$?
 	if [ "$i" == "$conn_node" ] ; then 
 		if [ "$res" != 0 ] ; then
-			a=1
+			echo "fail" > a
 		fi
 	else
 		if [ "$res" == 0 ] ; then
-			a=1
+			echo "fail" > a
 		fi
 	fi
 done
 
-exit $a
+cat a
+cat a | grep "ok"
+exit $?

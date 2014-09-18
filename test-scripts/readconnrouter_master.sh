@@ -1,7 +1,9 @@
-!/bin/bash
+#!/bin/bash
 
 # $1 - image name
 # $2 - last digits of IP
+
+set -x 
 
 image_name="$1"
 IP_end="$2"
@@ -28,8 +30,9 @@ sleep 10
 /home/ec2-user/test-scripts/processlist.sh $New_Master_IP
 a2=$?
 
-if [[ $a1==0 && $a2==0 ]] ; then
-   exit 0
-else
-   exit 1
+if [[ "$a1" = "0" && "$a2" = "0" ]] ; then
+     exit 0
+else 
+     echo "FAILED!"
+     exit 1
 fi

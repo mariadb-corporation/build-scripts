@@ -2,6 +2,7 @@
 #deb-src http://repo.percona.com/apt saucy main
 
 # http://mariadb.org/mariadb/repositories/
-deb http://mirror.netinch.com/pub/mariadb/repo/5.5/ubuntu saucy main
-deb-src http://mirror.netinch.com/pub/mariadb/repo/5.5/ubuntu saucy main
+#deb http://mirror.netinch.com/pub/mariadb/repo/5.5/ubuntu saucy main
+#deb-src http://mirror.netinch.com/pub/mariadb/repo/5.5/ubuntu saucy main
 
+deb http://ftp.fi.debian.org/debian/ jessie main

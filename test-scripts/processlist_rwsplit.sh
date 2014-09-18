@@ -26,23 +26,23 @@ do
    echo "show processlist;" | mysql -h 192.168.122.$i -uskysql -pskysql | grep "$IP_end"
 done
 
-a=0
+echo "ok" > a
 conn_num=0
 
 for i in $(seq $Master_IP $Last_node)
 do
 	lines=`echo "show processlist;" | mysql -h 192.168.122.$i -uskysql -pskysql | grep "105" | grep "test" | wc -l`
 	echo "Number of connections to $i is $lines"
-        conn_num=`expr $IP_end + $lines`
+        conn_num=`expr $conn_num + $lines`
 	if [[ "$i" == "$Master_IP" && $lines != 1 ]] ; then 
                 echo "Connection to Master is not 1, it is $lines"
-		a=1
+		echo "fail" > a
 	fi
 done
 
-if [ "conn_num" != "$all_connections" ] ; then
-	a=1
-	echo "total number of connection is $con_num instead of expecte $all_connections"
-fi
+#if [ "conn_num" != "$all_connections" ] ; then
+#	echo "fail" > a 
+#	echo "total number of connection is $conn_num instead of expected  $all_connections"
+#fi
 
-exit $a
+cat a | grep "ok"

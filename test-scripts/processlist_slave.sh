@@ -15,7 +15,7 @@ conn_node="$1"
 #echo "109:"
 #echo "show processlist;" | mysql -h 192.168.122.109 -uskysql -pskysql | grep "105"
 
-a=0
+echo "ok" > a
 
 for i in $(seq 106 109)
 do
@@ -24,13 +24,13 @@ do
 	echo "Number of connections to $i is $lines"
 	if [ "$i" == "$conn_node" ] ; then 
 		if [ $lines != 0 ] ; then
-			a=1
+			echo "fail" > a
 		fi
 	else
 		if [[ $lines > 34 || $lines < 32 ]] ; then
-			a=1
+			echo "fail" > a
 		fi
 	fi
 done
 
-exit $a
+cat a | grep "ok"

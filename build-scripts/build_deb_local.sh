@@ -16,8 +16,12 @@ apt-get update
 apt-get install -y dpkg-dev
 
 if [ "$cmake" == "yes" ] ; then
-  apt-get install -y cmake
-  apt-get install -y gcc g++ ncurses-dev bison build-essential libssl-dev libaio-dev libmariadbclient-dev  libmariadbd-dev mariadb-server perl make libtool librabbitmq-dev
+  cat /etc/*-release | grep "Ubuntu"
+#  if [ $? = 0 ]; then
+#	apt-get remove -y --force-yes locales language-pack-en-base language-pack-en ubuntu-minimal
+#  fi
+  apt-get install -y --force-yes cmake
+  apt-get install -y --force-yes gcc g++ ncurses-dev bison build-essential libssl-dev libaio-dev libmariadbclient-dev  libmariadbd-dev mariadb-server perl make libtool librabbitmq-dev
   cmake . -DSTATIC_EMBEDDED=Y --debug-output
   make
   make package
