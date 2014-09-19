@@ -19,6 +19,7 @@ Executes SQL query 'sql' using 'conn' connection
 */
 int execute_query(MYSQL *conn, char *sql);
 unsigned int get_conn_num(MYSQL *conn, char * ip, char * db);
+unsigned int get_Seconds_Behind_Master(MYSQL *conn);
 
 #endif // MARIADB_INTERACTION_H
 

@@ -133,3 +133,40 @@ fflush(stdout);
    return(conn_num);
 
 }
+
+unsigned int get_Seconds_Behind_Master(MYSQL *conn)
+{
+    MYSQL_RES *res;
+    MYSQL_ROW row;
+    unsigned long long int num_fields;
+    unsigned long long int row_i=0;
+    unsigned long long int i;
+    unsigned int SBM=0;
+
+    if(mysql_query(conn, "show slave status;") != 0) {
+         printf("Error: can't execute SQL-query: %s\n", mysql_error(conn));
+         SBM = 0;
+    } else {
+        res = mysql_store_result(conn);
+         if(res == NULL) printf("Error: can't get the result description\n");
+
+        num_fields = mysql_num_fields(res);
+	MYSQL_FIELD *field;
+	unsigned long long int SBM_i=0;
+        unsigned long long int fields_i = 0;
+
+	while((field = mysql_fetch_field(res)))
+	{
+		if (strstr(field->name, "Seconds_Behind_Master") != NULL) {SBM_i = fields_i;}
+		fields_i++;
+	}
+        if (mysql_num_rows(res) > 0) {
+           row = mysql_fetch_row(res);
+           sscanf(row[SBM_i], "%u", &SBM); 
+        }
+      
+   }
+   return(SBM);
+
+}
+

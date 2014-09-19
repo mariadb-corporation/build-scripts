@@ -1,5 +1,5 @@
 // libssl-dev libmariadbclient-dev
-// gcc rw_select_insert.c  mariadb_interaction.o -o rw_select_insert -I/usr/include/mysql/ -L/lib/x86_64-linux-gnu/ -lmariadbclient -lz -lcrypt -lnsl -lm -lpthread -lssl -lcrypto -ldl `mysql_config --cflags --libs`
+// gcc rw_select_insert.c  mariadb_interaction.o get_com_select_instert.o -o rw_select_insert -I/usr/include/mysql/ -L/lib/x86_64-linux-gnu/ -lmariadbclient -lz -lcrypt -lnsl -lm -lpthread -lssl -lcrypto -ldl `mysql_config --cflags --libs`
 
 #include <my_global.h>
 #include <mysql.h>
@@ -11,6 +11,7 @@
 #include <time.h>
 //#include <pthread.h>
 #include "mariadb_interaction.h"
+#include "get_com_select_insert.h"
 
 MYSQL *nodes[256];
 int selects[256];
@@ -19,70 +20,6 @@ int new_selects[256];
 int new_inserts[256];
 int silent = 0;
 int tolerance;
-
-/**
-Reads COM_SELECT and COM_INSERT variables from all nodes and stores into 'selects' and 'inserts'
-*/
-int get_global_status_allnodes(int *selects, int *inserts, int NodesNum)
-{
-    int i;
-    MYSQL_RES *res;
-    MYSQL_ROW row;
-
-    for (i=0; i<NodesNum; i++) {    
-    
-      if(mysql_query(nodes[i], "show global status like 'COM_SELECT';") != 0)
-         printf("Error: can't execute SQL-query\n");
-
-      res = mysql_store_result(nodes[i]);
-      if(res == NULL) printf("Error: can't get the result description\n");
-
-      if(mysql_num_rows(res) > 0)
-      {
-        while((row = mysql_fetch_row(res)) != NULL)
-        {
-          if (silent == 0) {printf("Node %d COM_SELECT=%s\n", i, row[1]);}
-          sscanf(row[1], "%d", &selects[i]);
-        }
-      }
-
-      mysql_free_result(res); 
-
-      if(mysql_query(nodes[i], "show global status like 'COM_INSERT';") != 0)
-         printf("Error: can't execute SQL-query\n");
-
-      res = mysql_store_result(nodes[i]);
-      if(res == NULL) printf("Error: can't get the result description\n");
-
-      if(mysql_num_rows(res) > 0)
-      {
-        while((row = mysql_fetch_row(res)) != NULL)
-        {
-          if (silent == 0) {printf("Node %d COM_INSERT=%s\n", i, row[1]);}
-          sscanf(row[1], "%d", &inserts[i]);
-        }
-      }
-
-      mysql_free_result(res); 
-
-  }
-  return(0);
-
-}
-
-/**
-Prints difference in COM_SELECT and COM_INSERT 
-*/
-int print_delta(int *new_selects, int *new_inserts, int *selects, int *inserts, int NodesNum)
-{
-  int i;
-  for (i=0; i<NodesNum; i++) { 
-    printf("COM_SELECT increase on node %d is %d\n", i, new_selects[i]-selects[i]); 
-    printf("COM_INSERT increase on node %d is %d\n", i, new_inserts[i]-inserts[i]); 
-  }
-  return(0);
-}
-
 
 /**
 Checks if COM_SELECT increase takes place only on one slave node and there is no COM_INSERT increase
@@ -134,7 +71,7 @@ int check_com_insert(int *new_selects, int *new_inserts, int *selects, int *inse
   for (i=0; i<NodesNum; i++) { 
     if (new_inserts[i]-inserts[i] != 1) {
 	sleep(1);
-	get_global_status_allnodes(&new_selects[0], &new_inserts[0], NodesNum);
+	get_global_status_allnodes(&new_selects[0], &new_inserts[0], nodes, NodesNum, silent);
     }
     if (new_inserts[i]-inserts[i] != 1) {result = 1; printf("INSERT query executed, but COM_INSERT increase is %d\n", new_inserts[i]-inserts[i]); }
     if (new_selects[i]-selects[i] != 0) {
@@ -185,46 +122,46 @@ int main(int argc, char *argv[])
 
   // connect to the MaxScale server (rwsplit)
   conn_rwsplit = open_conn(4006, ip);
-  get_global_status_allnodes(&selects[0], &inserts[0], NodesNum);
+  get_global_status_allnodes(&selects[0], &inserts[0], nodes, NodesNum, silent);
    
   global_result += execute_query(conn_rwsplit, "DROP TABLE IF EXISTS t1;");
   global_result += execute_query(conn_rwsplit, "create table t1 (x1 int);");
 
   global_result += execute_query(conn_rwsplit, "select * from t1;"); 
-  get_global_status_allnodes(&new_selects[0], &new_inserts[0], NodesNum);
+  get_global_status_allnodes(&new_selects[0], &new_inserts[0], nodes, NodesNum, silent);
   global_result += check_com_select(&new_selects[0], &new_inserts[0], &selects[0], &inserts[0], NodesNum);
 
   global_result += execute_query(conn_rwsplit, "insert into t1 values(1);"); 
-  get_global_status_allnodes(&new_selects[0], &new_inserts[0], NodesNum);
+  get_global_status_allnodes(&new_selects[0], &new_inserts[0], nodes, NodesNum, silent);
   global_result += check_com_insert(&new_selects[0], &new_inserts[0], &selects[0], &inserts[0], NodesNum); 
 
   execute_query(conn_rwsplit, "select * from t1;"); 
-  get_global_status_allnodes(&new_selects[0], &new_inserts[0], NodesNum);
+  get_global_status_allnodes(&new_selects[0], &new_inserts[0], nodes, NodesNum, silent);
   global_result += check_com_select(&new_selects[0], &new_inserts[0], &selects[0], &inserts[0], NodesNum);
 
   execute_query(conn_rwsplit, "insert into t1 values(1);"); 
-  get_global_status_allnodes(&new_selects[0], &new_inserts[0], NodesNum);
+  get_global_status_allnodes(&new_selects[0], &new_inserts[0], nodes, NodesNum, silent);
   global_result += check_com_insert(&new_selects[0], &new_inserts[0], &selects[0], &inserts[0], NodesNum);
 
   int selects_before_100[255];
   int inserts_before_100[255];
   silent = 1;
-  get_global_status_allnodes(&selects_before_100[0], &inserts_before_100[0], NodesNum);
+  get_global_status_allnodes(&selects_before_100[0], &inserts_before_100[0], nodes, NodesNum, silent);
   printf("Doing 100 selects\n");
   tolerance=2*NodesNum;
   for (i=0; i<100; i++) {
     global_result += execute_query(conn_rwsplit, "select * from t1;"); 
-    get_global_status_allnodes(&new_selects[0], &new_inserts[0], NodesNum);
+    get_global_status_allnodes(&new_selects[0], &new_inserts[0], nodes, NodesNum, silent);
     global_result += check_com_select(&new_selects[0], &new_inserts[0], &selects[0], &inserts[0], NodesNum);
   }
   print_delta(&new_selects[0], &new_inserts[0], &selects_before_100[0], &inserts_before_100[0], NodesNum); 
 
-  get_global_status_allnodes(&selects_before_100[0], &inserts_before_100[0], NodesNum);
+  get_global_status_allnodes(&selects_before_100[0], &inserts_before_100[0], nodes, NodesNum, silent);
   printf("Doing 100 inserts\n");
   tolerance=2*NodesNum;
   for (i=0; i<100; i++) {
     global_result += execute_query(conn_rwsplit, "insert into t1 values(1);"); 
-    get_global_status_allnodes(&new_selects[0], &new_inserts[0], NodesNum);
+    get_global_status_allnodes(&new_selects[0], &new_inserts[0], nodes, NodesNum, silent);
     global_result += check_com_insert(&new_selects[0], &new_inserts[0], &selects[0], &inserts[0], NodesNum);
   }
   print_delta(&new_selects[0], &new_inserts[0], &selects_before_100[0], &inserts_before_100[0], NodesNum); 
