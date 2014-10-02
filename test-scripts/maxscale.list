@@ -1,1 +1,1 @@
-deb [arch=amd64] http://jenkins.engskysql.com/repo/release-1.0beta-refresh/ubuntu_server14.04_amd64 trusty main
+deb [arch=amd64] http://jenkins.engskysql.com/repo/release-1.0.1beta/ubuntu_server14.04_amd64 trusty main

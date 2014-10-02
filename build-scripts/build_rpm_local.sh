@@ -6,6 +6,7 @@
 set -x
 
 cmake=$3
+cmake_flags=$4
 
 cd /home/ec2-user/workspace
 
@@ -13,7 +14,7 @@ if [ -f  /home/ec2-user/parameters ]; then
 	. /home/ec2-user/parameters
 fi
 
-if [[ "$#" != "2" && "$#" != "3" ]]; then
+if [[ "$#" != "2" && "$#" != "3" && "$#" != "4" ]]; then
 	echo "Not enough arguments, usage"
 	echo "./build_rpm.sh path_to_.spec path_to_sources"
 	exit 1
@@ -66,11 +67,11 @@ if [ "$cmake" == "yes" ] ; then
      yum install -y libedit-devel
      yum install -y systemtap-sdt-devel
      cat /etc/redhat-release | grep "release 7"
-     if [ $? == 0 ] ; then
-	yum install -y mariadb-devel mariadb-embedded-devel  
-     else
+#     if [ $? == 0 ] ; then
+#	yum install -y mariadb-devel mariadb-embedded-devel  
+#     else
    	yum install -y MariaDB-devel MariaDB-server
-     fi
+#     fi
      cat /etc/redhat-release | grep "release 6"
      rs=$?
      cat /etc/redhat-release | grep "release 5"
@@ -80,7 +81,7 @@ if [ "$cmake" == "yes" ] ; then
    	yum install -y $cmake_cmd
      fi
    fi
-   $cmake_cmd .  -DSTATIC_EMBEDDED=Y
+   $cmake_cmd .  -DSTATIC_EMBEDDED=Y $cmake_flags
    make
    make package
 else

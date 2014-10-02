@@ -2,7 +2,7 @@
 # http://mariadb.org/mariadb/repositories/
 [mariadb]
 name = MariaDB
-baseurl = http://yum.mariadb.org/5.5/centos6-amd64
+baseurl = http://yum.mariadb.org/5.5/fedora20-amd64
 gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
-enabled=0
 gpgcheck=1
+

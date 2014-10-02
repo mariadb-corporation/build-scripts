@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
   }
   // Connecting to all nodes
   if (connect_all_nodes(nodes, IP_end, NodesNum) != 0) {exit(2);}
+  sleep(10);
 
   global_result=0;
   unsigned int conn_num;
@@ -83,6 +84,8 @@ int main(int argc, char *argv[])
   for (i=0; i<maxscale_conn_num; i++) {
     conn_rwsplit[i] = open_conn(4006, ip);
   }
+
+  sleep(10);
 
   for (i=0; i<NodesNum; i++) {
       conn_num = get_conn_num(nodes[i], ip, "test");

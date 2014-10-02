@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
   MYSQL *conn_master;
   MYSQL *conn_slave; 
 
-  int N=3;
+  int N=4;
   char sql[N][1000000];
   int i;
   int global_result = 0;
@@ -62,25 +62,40 @@ int main(int argc, char *argv[])
 
   printf("SELECT: rwsplitter\n");
   global_result += select_from_t1(conn_rwsplit, N);
+  printf("SELECT: rwsplitter\n");
+  global_result += select_from_t1(conn_rwsplit, N);
+  ыsystem(  
+  sleep(20);
+  printf("SELECT: rwsplitter\n");
+  global_result += select_from_t1(conn_rwsplit, N);
+
   printf("SELECT: master\n");
   global_result += select_from_t1(conn_master, N);
   printf("SELECT: slave\n");
   global_result += select_from_t1(conn_slave, N);
 
+
+
   for (i=0; i<NodesNum; i++) {
     printf("SELECT: directly from node %d\n", i);
     global_result += select_from_t1(nodes[i], N);
   }
+  printf("SELECT: rwsplitter\n");
+  global_result += select_from_t1(conn_rwsplit, N);
 
   printf("Creating database test1\n");
   global_result += execute_query(conn_rwsplit, "DROP TABLE t1");
   global_result += execute_query(conn_rwsplit, "DROP  DATABASE IF EXISTS test1;");
   global_result += execute_query(conn_rwsplit, "CREATE DATABASE test1;");
 
+  printf("selecting DB test1 for rwsplit\n"); 
   global_result += execute_query(conn_rwsplit, "USE test1;");
+  printf("selecting DB test1 for readconn master\n"); 
   global_result += execute_query(conn_slave, "USE test1;");
+  printf("selecting DB test1 for readconn slave\n"); 
   global_result += execute_query(conn_master, "USE test1;");
   for (i=0; i<NodesNum; i++) {
+    printf("selecting DB test1 for direct connection to node %d\n", i);
     global_result += execute_query(nodes[i], "USE test1;");
   }
 

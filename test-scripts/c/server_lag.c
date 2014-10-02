@@ -126,6 +126,7 @@ void *checks_thread( void *ptr )
     int i;
     int j;
     for (i=0; i<1000000; i++) {
+        printf("i=%u\t ", i);
         for (j=0; j < NodesNum; j++) {printf("SBM=%u\t", get_Seconds_Behind_Master(nodes[j]));}
         printf("\n");
     }
