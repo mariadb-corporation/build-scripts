@@ -49,11 +49,14 @@ if [[ $? == 0 ]]; then
 		iptables -I INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
 		iptables -I INPUT -p tcp -m tcp --dport 4006 -j ACCEPT
                 iptables -I INPUT -p tcp -m tcp --dport 4008 -j ACCEPT
-                iptables -I INPUT -p tcp -m tcp --dport 4442 -j ACCEPT
+                iptables -I INPUT -p tcp -m tcp --dport 4009 -j ACCEPT
+		iptables -I INPUT -p tcp -m tcp --dport 4442 -j ACCEPT
                 iptables -I INPUT -p tcp -m tcp --dport 6444 -j ACCEPT
 		iptables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 		iptables -I INPUT -p tcp --dport 3306 -j ACCEPT -m state --state NEW
 		iptables -I INPUT -p tcp --dport 4006 -j ACCEPT -m state --state NEW
+                iptables -I INPUT -p tcp --dport 4008 -j ACCEPT -m state --state NEW
+                iptables -I INPUT -p tcp --dport 4009 -j ACCEPT -m state --state NEW
 		echo "Unable to determine network device - opening Galera port to the world"
 	else
 		iptables -I INPUT -i "$dev" -p tcp -m tcp --dport 4567 -j ACCEPT
@@ -62,12 +65,14 @@ if [[ $? == 0 ]]; then
 		iptables -I INPUT -i "$dev" -p tcp -m tcp --dport 3306 -j ACCEPT
 		iptables -I INPUT -i "$dev" -p tcp -m tcp --dport 4006 -j ACCEPT
 		iptables -I INPUT -i "$dev" -p tcp -m tcp --dport 4008 -j ACCEPT
+                iptables -I INPUT -i "$dev" -p tcp -m tcp --dport 4009 -j ACCEPT
 		iptables -I INPUT -i "$dev" -p tcp -m tcp --dport 4442 -j ACCEPT
 		iptables -I INPUT -i "$dev" -p tcp -m tcp --dport 6444 -j ACCEPT
 		iptables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 		iptables -I INPUT -p tcp --dport 3306 -j ACCEPT -m state --state NEW
 		iptables -I INPUT -p tcp --dport 4006 -j ACCEPT -m state --state NEW
 		iptables -I INPUT -p tcp --dport 4008 -j ACCEPT -m state --state NEW
+                iptables -I INPUT -p tcp --dport 4009 -j ACCEPT -m state --state NEW
 		iptables -I INPUT -p tcp --dport 4442 -j ACCEPT -m state --state NEW
 		iptables -I INPUT -p tcp --dport 6444 -j ACCEPT -m state --state NEW
 	fi

@@ -6,13 +6,13 @@
 set -x
 
 cmake=$3
-cmake_flags=$4
+#cmake_flags=$4
 
 cd /home/ec2-user/workspace
 
-if [ -f  /home/ec2-user/parameters ]; then
-	. /home/ec2-user/parameters
-fi
+#if [ -f  /home/ec2-user/parameters ]; then
+#	. /home/ec2-user/parameters
+#fi
 
 if [[ "$#" != "2" && "$#" != "3" && "$#" != "4" ]]; then
 	echo "Not enough arguments, usage"

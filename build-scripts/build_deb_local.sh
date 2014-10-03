@@ -22,7 +22,7 @@ if [ "$cmake" == "yes" ] ; then
 #  fi
   apt-get install -y --force-yes cmake
   apt-get install -y --force-yes gcc g++ ncurses-dev bison build-essential libssl-dev libaio-dev libmariadbclient-dev  libmariadbd-dev mariadb-server perl make libtool librabbitmq-dev
-  cmake . -DSTATIC_EMBEDDED=Y --debug-output
+  cmake . -DSTATIC_EMBEDDED=Y --debug-output $cmake_flags
   make
   make package
   cp _CPack_Packages/Linux/DEB/*.deb ../

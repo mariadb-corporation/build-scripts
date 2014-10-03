@@ -37,8 +37,14 @@ do
 done
 
 
+ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$IP_end "/root/firewall-setup.sh 192.168.122.$IP_end"
+
+
+
 ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$Master_IP "/etc/init.d/mysql start --wsrep-cluster-address=gcomm://"
 sleep 10
+ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$Master_IP "echo 'CREATE DATABASE IF NOT EXISTS test;' | mysql "
+
 
 for i in $(seq $First_slave $x)
 do

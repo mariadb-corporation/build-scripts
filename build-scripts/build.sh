@@ -85,5 +85,15 @@ if [ "$gcov" == "yes" ] ; then
 	export cmake_flags="-DGCOV=Y"
 fi
 
+if [ "$BUILD_TEST" == "yes" ] ; then
+        export cmake_flags="$cmake_flags -DBUILD_TESTS=Y"
+fi
+
+if [ "$DEBUG" == "yes" ] ; then
+        export cmake_flags="$cmake_flags -DBUILD_TYPE=Debug"
+fi
+
+
+
 /home/ec2-user/build-scripts/build_packages_one.sh $spec_name . $target $image $cmake
 

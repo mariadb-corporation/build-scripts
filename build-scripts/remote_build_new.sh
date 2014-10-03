@@ -55,7 +55,7 @@ else
 		fi
 
 		echo "run build on $image"
-		ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  root@$IP /home/ec2-user/build_rpm_local.sh $3 $4 $6 $cmake_flags
+		ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  root@$IP "export cmake_flags=\"$cmake_flags\"; /home/ec2-user/build_rpm_local.sh $3 $4 $6"
 		if [ $? -ne 0 ] ; then
 		        echo "Error build on $image"
 		        exit 4
@@ -81,7 +81,7 @@ else
                 fi
 
                 echo "run build on $image"
-                ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  root@$IP /home/ec2-user/build_deb_local.sh $3 $4 $6
+                ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  root@$IP "export cmake_flags=\"$cmake_flags\"; /home/ec2-user/build_deb_local.sh $3 $4 $6"
                 if [ $? -ne 0 ] ; then
                         echo "Error build on $image"
                         exit 4
