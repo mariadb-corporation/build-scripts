@@ -33,4 +33,6 @@ do
 	fi
 done
 
+killall connect100
+
 cat a | grep "ok"

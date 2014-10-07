@@ -30,6 +30,9 @@ sleep 10
 /home/ec2-user/test-scripts/processlist.sh $New_Master_IP
 a2=$?
 
+/home/ec2-user/test-setup-scripts/change_master.sh $image_name $IP_end $N $New_Master_IP $Master_IP
+#killall connect
+sleep 30
 if [[ "$a1" = "0" && "$a2" = "0" ]] ; then
      exit 0
 else 

@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
   int global_result = 0;
 
   char ip[15];
+  char maxscaleIP[15];
   char ip1[15];
 
   int IP_end;
@@ -39,6 +40,7 @@ int main(int argc, char *argv[])
   sscanf(argv[1], "%d", &IP_end);
   if ( (IP_end < 0) || (IP_end > 255) ) { printf("Wrong last digits of IP\n"); exit(2); }
   sprintf(ip, "192.168.122.%d", IP_end);
+  sprintf(maxscaleIP, "192.168.122.%s", getenv("maxscaleIP"));
   
   sscanf(argv[2], "%d", &NodesNum);
   if ( (NodesNum < 3) || (NodesNum > 255) ) { printf("Wrong number of nodes\n"); exit(2); }
@@ -49,7 +51,7 @@ int main(int argc, char *argv[])
   if (connect_all_nodes(nodes, IP_end, NodesNum) != 0) {exit(2);}
 
   // connect to the MaxScale server (rwsplit)
-  conn_rwsplit = open_conn(4006, ip);
+  conn_rwsplit = open_conn(4006, maxscaleIP);
   if (conn_rwsplit == NULL ) {
     printf("Can't connect to MaxScale\n");
     exit(1);

@@ -7,8 +7,12 @@ set -x
 
 cmake=$3
 
+if [ -z "$build_dir" ] ; then
+        build_dir="/home/ec2-user/workspace/"
+fi
 
-cd /home/ec2-user/workspace
+
+cd $build_dir
 
 
 

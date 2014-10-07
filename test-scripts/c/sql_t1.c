@@ -28,13 +28,26 @@ int execute_select_query_and_check(MYSQL *conn, char *sql, unsigned long long in
      int test_result = 0;
 
      printf("Trying SELECT, num_of_rows=%llu\n", rows);
-     if(mysql_query(conn, sql) != 0)
-         printf("Error: can't execute SQL-query: %s\n", mysql_error(conn));
 
-     res = mysql_store_result(conn);
-     if(res == NULL) printf("Error: can't get the result description\n");
-    printf("rows=%llu\n", mysql_num_rows(res));
-    if (mysql_num_rows(res) != rows) {printf("SELECT returned %llu rows insted of %llu!\n", mysql_num_rows(res), rows); test_result=1;  printf("sql was %s\n", sql);}
+     unsigned long long int rows_from_select=0;
+     int wait_i=0;
+     while ((rows_from_select != rows) && (wait_i < 10)) {
+         if(mysql_query(conn, sql) != 0)
+            printf("Error: can't execute SQL-query: %s\n", mysql_error(conn));
+
+         res = mysql_store_result(conn);
+         if(res == NULL) printf("Error: can't get the result description\n");
+              printf("rows=%llu\n", mysql_num_rows(res));
+         rows_from_select = mysql_num_rows(res); 
+         wait_i++;
+         if (rows_from_select != rows) {
+		printf("Waiting 1 second and trying again...\n");
+		sleep(1);
+         }
+    }
+
+    if (rows_from_select != rows) {printf("SELECT returned %llu rows insted of %llu!\n", rows_from_select, rows); test_result=1;  printf("sql was %s\n", sql);}
+
     num_fields = mysql_num_fields(res);
     if (num_fields != 2) { printf("SELECT returned %llu fileds insted of 2!\n", num_fields); test_result=1; }
     if(mysql_num_rows(res) > 0)

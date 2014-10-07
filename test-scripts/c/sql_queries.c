@@ -62,12 +62,12 @@ int main(int argc, char *argv[])
 
   printf("SELECT: rwsplitter\n");
   global_result += select_from_t1(conn_rwsplit, N);
-  printf("SELECT: rwsplitter\n");
-  global_result += select_from_t1(conn_rwsplit, N);
-  ыsystem(  
-  sleep(20);
-  printf("SELECT: rwsplitter\n");
-  global_result += select_from_t1(conn_rwsplit, N);
+//  printf("SELECT: rwsplitter\n");
+//  global_result += select_from_t1(conn_rwsplit, N);
+    
+//  sleep(20);
+//  printf("SELECT: rwsplitter\n");
+//  global_result += select_from_t1(conn_rwsplit, N);
 
   printf("SELECT: master\n");
   global_result += select_from_t1(conn_master, N);
@@ -87,6 +87,7 @@ int main(int argc, char *argv[])
   global_result += execute_query(conn_rwsplit, "DROP TABLE t1");
   global_result += execute_query(conn_rwsplit, "DROP  DATABASE IF EXISTS test1;");
   global_result += execute_query(conn_rwsplit, "CREATE DATABASE test1;");
+  sleep(5);
 
   printf("selecting DB test1 for rwsplit\n"); 
   global_result += execute_query(conn_rwsplit, "USE test1;");

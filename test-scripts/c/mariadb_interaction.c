@@ -97,14 +97,14 @@ unsigned int get_conn_num(MYSQL *conn, char * ip, char * db)
     unsigned long long int i;
     unsigned int conn_num=0;
 
-    printf("trying show processlist;\n");
-fflush(stdout);
+//    printf("trying show processlist;\n");
+//fflush(stdout);
     if(mysql_query(conn, "show processlist;") != 0) {
          printf("Error: can't execute SQL-query: %s\n", mysql_error(conn));
          conn_num = 0;
     } else {
-    	printf("getting results\n");
-	fflush(stdout);
+//    	printf("getting results\n");
+//	fflush(stdout);
 	res = mysql_store_result(conn);
    	 if(res == NULL) printf("Error: can't get the result description\n");
 

@@ -2,6 +2,12 @@
 
 set -x
 
+IP=$1
+
+if [ -z "$IP" ] ; then
+	IP="192.168.122.2"
+fi
+
 mkdir -p /home/ec2-user/workspace/server/test/MaxScale/etc
 
 /usr/bin/mysql_install_db --defaults-file=/home/ec2-user/server1.cnf
@@ -27,7 +33,7 @@ log_file=`echo "show master status\G" | mysql -h 127.0.0.1 -uroot -pskysql  -P 3
 log_pos=`echo "show master status\G" | mysql -h 127.0.0.1 -uroot -pskysql  -P 3000 |  grep "Position:" | sed "s/Position://" | sed "s/ //g"`
 
 
-echo "change master to MASTER_HOST='192.168.122.2';" | mysql -h 127.0.0.1 -uroot -pskysql -P 3001 
+echo "change master to MASTER_HOST='$IP';" | mysql -h 127.0.0.1 -uroot -pskysql -P 3001 
 echo "change master to MASTER_PORT=3000;"  | mysql -h 127.0.0.1 -uroot -pskysql -P 3001
 echo "change master to MASTER_USER='repl';" | mysql -h 127.0.0.1 -uroot -pskysql -P 3001 
 echo "change master to MASTER_PASSWORD='repl';" | mysql -h 127.0.0.1 -uroot -pskysql -P 3001 
@@ -35,7 +41,7 @@ echo "change master to MASTER_LOG_FILE='$log_file';" | mysql -h 127.0.0.1 -uroot
 echo "change master to MASTER_LOG_POS=$log_pos;" | mysql -h 127.0.0.1 -uroot -pskysql -P 3001 
 echo "start slave;" | mysql -h 127.0.0.1 -uroot -pskysql -P 3001 
 
-echo "change master to MASTER_HOST='192.168.122.2';" | mysql -h 127.0.0.1 -uroot -pskysql -P 2002
+echo "change master to MASTER_HOST='$IP';" | mysql -h 127.0.0.1 -uroot -pskysql -P 2002
 echo "change master to MASTER_PORT=3000;"  | mysql -h 127.0.0.1 -uroot -pskysql -P 2002
 echo "change master to MASTER_USER='repl';" | mysql -h 127.0.0.1 -uroot -pskysql -P 2002
 echo "change master to MASTER_PASSWORD='repl';" | mysql -h 127.0.0.1 -uroot -pskysql -P 2002

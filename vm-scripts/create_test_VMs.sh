@@ -3,12 +3,18 @@
 # $1 - image 
 # $2 - last digits of IP
 # $3 - number of machines
+# Do_not_touch_firstVM - yes/no
 
 set -x
 
 image="$1"
 IP_end="$2"
 N="$3"
+
+if [ "$Do_not_touch_firstVM" == "yes" ] ; then
+	N=`expr $N - 1`
+	IP_end=`expr $IP_end + 1`
+fi
 
 x=`expr $IP_end + $N - 1`
 lock=0

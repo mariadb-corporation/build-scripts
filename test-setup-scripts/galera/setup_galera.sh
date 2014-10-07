@@ -36,7 +36,7 @@ do
 
 done
 
-
+scp -r -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/test-setup-scripts/galera/* root@192.168.122.$IP_end:/root/
 ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$IP_end "/root/firewall-setup.sh 192.168.122.$IP_end"
 
 

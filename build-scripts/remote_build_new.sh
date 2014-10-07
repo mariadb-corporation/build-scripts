@@ -19,13 +19,18 @@ echo "target is $target"
 mkdir -p /home/ec2-user/pre-repo/$target/SRC
 mkdir -p /home/ec2-user/pre-repo/$target/$image
 
-/home/ec2-user/kvm/start_build_VM.sh $image
+if [ "$do_not_reset_vm2" != "yes" ] ; then
+	/home/ec2-user/kvm/start_build_VM.sh $image
+fi
+if [ -z "$build_dir" ] ; then
+	build_dir="/home/ec2-user/workspace/"
+fi
 
 echo "copying stuff to $image machine"
-echo "scp  -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r ./* ec2-user@$IP:/home/ec2-user/workspace"
-ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP 'mkdir -p /home/ec2-user/workspace'
+echo "scp  -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r ./* root@$IP:$build_dir"
+ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "mkdir -p $build_dir"
 
-scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r  ./* ec2-user@$IP:/home/ec2-user/workspace
+scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r  ./* root@$IP:$build_dir
 
 if [ $?	-ne 0 ] ; then
         echo "Error copying stuff to $image machine"
@@ -55,7 +60,7 @@ else
 		fi
 
 		echo "run build on $image"
-		ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  root@$IP "export cmake_flags=\"$cmake_flags\"; /home/ec2-user/build_rpm_local.sh $3 $4 $6"
+		ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  root@$IP "export cmake_flags=\"$cmake_flags\"; export build_dir=\"$build_dir\"; /home/ec2-user/build_rpm_local.sh $3 $4 $6"
 		if [ $? -ne 0 ] ; then
 		        echo "Error build on $image"
 		        exit 4
@@ -65,7 +70,7 @@ else
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/rpmbuild/RPMS/noarch/* /home/ec2-user/pre-repo/$target/$image
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/rpmbuild/RPMS/i386/* /home/ec2-user/pre-repo/$target/$image
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/rpmbuild/RPMS/x86_64/* /home/ec2-user/pre-repo/$target/$image
-		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/workspace/*.rpm /home/ec2-user/pre-repo/$target/$image
+		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:$build_dir/*.rpm /home/ec2-user/pre-repo/$target/$image
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/rpmbuild/SOURCES/* /home/ec2-user/pre-repo/$target/SRC
 	else
                 echo "copying build script to $image machine"
@@ -81,7 +86,7 @@ else
                 fi
 
                 echo "run build on $image"
-                ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  root@$IP "export cmake_flags=\"$cmake_flags\"; /home/ec2-user/build_deb_local.sh $3 $4 $6"
+                ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  root@$IP "export cmake_flags=\"$cmake_flags\";  export build_dir=\"$build_dir\"; /home/ec2-user/build_deb_local.sh $3 $4 $6"
                 if [ $? -ne 0 ] ; then
                         echo "Error build on $image"
                         exit 4
@@ -89,10 +94,10 @@ else
                 echo "copying repo to the repo/$target/$image"
                 mkdir -p /home/ec2-user/pre-repo/$target/$image
                 scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/*.deb /home/ec2-user/pre-repo/$target/$image
-		echo "copying grex from /home/ec2-user/pre-repo/$target/$image/"
+		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:$build_dir/../*.deb /home/ec2-user/pre-repo/$target/$image
 	fi
 fi
 
 echo "package building for $target done!"
 
-/home/ec2-user/build-scripts/create_remote_repo.sh $image 192.168.122.2 $target
+/home/ec2-user/build-scripts/create_remote_repo.sh $image $IP $target

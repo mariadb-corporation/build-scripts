@@ -1,18 +1,25 @@
 #!/bin/bash
 
 # $1 - image
-# $2 - last digits of IP
+# $2 - last digits of IP of MaxScale node
 # $3 - maxscale.cnf.template suffix (tamplete name, currently "galera" or "replication")
+# $4 - last digits of IP of the cluster
 
 set -x
 
-IP_end=$2
+IP_end=$4
 image=$1
 template=$3
+maxscaleIP=$2
 
 if [ -z $template ] ; then
   template="replication"
 fi
+
+if [ -z $IP_end ] ; then
+  IP_end=$maxscaleIP
+fi
+
 
 cp /home/ec2-user/test-scripts/maxscale.cnf.template.$template /home/ec2-user/test-scripts/MaxScale.cnf
 if [ $? -ne 0 ] ; then
@@ -26,7 +33,7 @@ do
 done
 
 max_dir="/usr/local/skysql/maxscale/"
-scp -i /home/ec2-user/KEYS/$image -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /home/ec2-user/test-scripts/MaxScale.cnf root@192.168.122.$IP_end:$max_dir/etc/
-ssh -i /home/ec2-user/KEYS/$image -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.122.$IP_end "$max_dir/bin/maxkeys $max_dir/etc/.secrets"
-ssh -i /home/ec2-user/KEYS/$image -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.122.$IP_end "/etc/init.d/maxscale start" &
+scp -i /home/ec2-user/KEYS/$image -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /home/ec2-user/test-scripts/MaxScale.cnf root@192.168.122.$maxscaleIP:$max_dir/etc/
+ssh -i /home/ec2-user/KEYS/$image -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.122.$maxscaleIP "$max_dir/bin/maxkeys $max_dir/etc/.secrets"
+ssh -i /home/ec2-user/KEYS/$image -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.122.$maxscaleIP "service maxscale restart" 
 sleep 30
