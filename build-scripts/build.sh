@@ -45,6 +45,9 @@ if [ "$5" != "" ] ; then
   cd $5
 fi
 
+spec_name="foo.spec"
+if [ "$cmake" != "yes" ] ; then
+
 num_of_specs=`ls -1 *.spec | wc -l`
 if [ $num_of_specs -ne 1 ]; then
         echo "Error there is no or several .spec. Exiting"
@@ -52,8 +55,6 @@ if [ $num_of_specs -ne 1 ]; then
 fi
 spec_name=`ls *.spec`
 package_name=`echo ${spec_name%.*}`
-
-
 
 # checking .spec for ##VERSION_TAG## and replacing it with info from tag
 grep "##VERSION_TAG##" $spec_name > /dev/null
@@ -77,6 +78,8 @@ else
        	echo "##RELEASE_TAG## is not found. .spec unchanged"
 fi
 
+fi
+
 #if [ "$gcov" == "yes" ] ; then
 #	patch -p1 < gcov.diff
 #fi
@@ -91,6 +94,16 @@ fi
 
 if [ "$DEBUG" == "yes" ] ; then
         export cmake_flags="$cmake_flags -DBUILD_TYPE=Debug"
+fi
+
+if [ "$BUILD_RABBITMQ" == "yes" ] ; then
+        export cmake_flags="$cmake_flags -DBUILD_RABBITMQ=Y"
+fi
+
+if [ "$Dynlib" == "yes" ] ; then
+        export cmake_flags="$cmake_flags -DSTATIC_EMBEDDED=N"
+else
+       export cmake_flags="$cmake_flags -DSTATIC_EMBEDDED=Y"
 fi
 
 

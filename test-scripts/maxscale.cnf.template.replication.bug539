@@ -8,7 +8,7 @@
 # 	threads=<number of threads>
 
 [maxscale]
-threads=1
+threads=###threads###
 
 # Define a monitor that can be used to determine the state and role of
 # the servers.
@@ -23,63 +23,9 @@ threads=1
 #	monitor_interval=<sampling interval in milliseconds,
 #                          default value is 10000>
 
-[MySQL Monitor]
-type=monitor
-module=mysqlmon
-servers= server1, server2,server3  ,server4
-user=skysql
-passwd= skysql
-
-# A series of service definition
-#
-# Valid options are:
-#
-# 	router=<name of router module>
-# 	servers=<server name>,<server name>,...
-# 	user=<User to fetch password inforamtion with>
-# 	passwd=<Password of the user, plain text currently>
-#	enable_root_user=<0 or 1, default is 0>
-#	version_string=<specific string for server handshake,
-#		default is the MariaDB embedded library version>
-#
-# Valid router modules currently are:
-# 	readwritesplit, readconnroute and debugcli
-
-[RW Split Router]
-type=service
-router= readwritesplit
-servers=server1,     server2,              server3,server4
-user=skysql
-passwd=skysql
-filters=QLA
-
-[Read Connection Router Slave]
-type=service
-router=readconnroute
-router_options= slave
-servers=server1,server2,server3,server4
-user=skysql
-passwd=skysql
-filters=QLA
-
-[Read Connection Router Master]
-type=service
-router=readconnroute
-router_options=master
-servers=server1,server2,server3,server4
-user=skysql
-passwd=skysql
-filters=QLA
-
-
-[HTTPD Router]
-type=service
-router=testroute
-servers=server1,server2,server3,server4
-
-[Debug Interface]
-type=service
-router=debugcli
+[hints]
+type=filter
+module=hintfilter
 
 # Listener definitions for the services
 #
@@ -91,24 +37,44 @@ router=debugcli
 #	address=<Address to bind to>
 #	socket=<Listening socket>
 
+
+[RW Split Router]
+type=service
+router=readwritesplit
+servers=server1,server2,server3,server4
+max_slave_connections=100%
+use_sql_variables_in=master
+router_options=slave_selection_criteria=LEAST_BEHIND_MASTER
+user=skysq√l
+passwd=mskysql
+filters=hints
+
+[Debug Interface]
+type=service
+router=debugcli
+
+[Client Interface]
+type=service
+router=cli
+
+# Listener definitions for the services
+#
+# Valid options are:
+#
+# 	service=<name of service defined elsewhere>
+# 	protocol=<name of protocol module with which to listen>
+# 	port=<Listening port>
+#	address=<Address to bind to>
+#	socket=<Listening socket>
+
+
 [RW Split Listener]
 type=listener
 service=RW Split Router
 protocol=MySQLClient
 port=4006
-#socket=/tmp/rwsplit.sock
+socket=/tmp/rwsplit.sock
 
-[Read Connection Listener Slave]
-type=listener
-service=Read Connection Router Slave
-protocol=MySQLClient
-port=4009
-
-[Read Connection Listener Master]
-type=listener
-service=Read Connection Router Master
-protocol=MySQLClient
-port=4008
 
 [Debug Listener]
 type=listener
@@ -117,19 +83,13 @@ protocol=telnetd
 port=4442
 #address=127.0.0.1
 
-[HTTPD Listener]
-type=listener
-service=HTTPD Router
-protocol=HTTPD
-port=6444
-
 # Definition of the servers
 
 [server1]
 type=server
-address=###server_IP_1###
-port=3306
-protocol=MySQLBackend
+address= ###server_IP_1###
+port= 3306
+protocol= MySQLBackend
 
 [server2]
 type=server

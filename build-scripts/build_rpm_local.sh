@@ -32,25 +32,6 @@ source_dir=$2;
 
 rm -rf rpmbuild
 
-version=`cat  "$1" | sed -ne 's/^%define version\s*\([^\s]*\)$/\1/p' | sed 's/ //'`
-release=`cat  "$1" | sed -ne 's/^%define release\s*\([^\s]*\)$/\1/p' | sed 's/ //'`
-
-name=`cat  "$1" | sed -ne 's/^%define name\s*//p'  | sed 's/ //'`
-
-if [ -z "$version" ];then
-	echo "Version in $1 is incorrect, exiting!"
-	exit 1
-fi
-
-if [ -z "$name" ];then
-        echo "Package name in $1 is incorrect, exiting!"
-        exit 1
-fi
-
-echo "name:"$name":"
-echo "version:"$version":"
-echo "release:"$release":"
-
 if [ "$cmake" == "yes" ] ; then
    cmake_cmd="cmake"
    if [ $zy != 0 ] ; then
@@ -62,14 +43,14 @@ if [ "$cmake" == "yes" ] ; then
 #     zypper -n install cmake
    else
      yum clean all 
-     yum install -y gcc gcc-c++ ncurses-devel bison glibc-devel libgcc perl make libtool openssl-devel libaio libaio-devel librabbitmq-devel libedit-devel
-     yum install -y libedit-devel
-     yum install -y systemtap-sdt-devel
+     yum install -y --skip-broken gcc gcc-c++ ncurses-devel bison glibc-devel libgcc perl make libtool openssl-devel libaio libaio-devel librabbitmq-devel libedit-devel
+     yum install -y --skip-broken libedit-devel
+     yum install -y --skip-broken systemtap-sdt-devel
      cat /etc/redhat-release | grep "release 7"
 #     if [ $? == 0 ] ; then
 #	yum install -y mariadb-devel mariadb-embedded-devel  
 #     else
-   	yum install -y MariaDB-devel MariaDB-server
+   	yum install -y --skip-broken MariaDB-devel MariaDB-server
 #     fi
      cat /etc/redhat-release | grep "release 6"
      rs=$?
@@ -77,13 +58,33 @@ if [ "$cmake" == "yes" ] ; then
      if [[ $? == 0 || $rs == 0 ]] ; then
 	echo "cmake is already manually installed"
      else
-   	yum install -y $cmake_cmd
+   	yum install -y --skip-broken $cmake_cmd
      fi
    fi
-   $cmake_cmd .  -DSTATIC_EMBEDDED=Y $cmake_flags
+   $cmake_cmd .  $cmake_flags
    make
    make package
 else
+
+version=`cat  "$1" | sed -ne 's/^%define version\s*\([^\s]*\)$/\1/p' | sed 's/ //'`
+release=`cat  "$1" | sed -ne 's/^%define release\s*\([^\s]*\)$/\1/p' | sed 's/ //'`
+
+name=`cat  "$1" | sed -ne 's/^%define name\s*//p'  | sed 's/ //'`
+
+if [ -z "$version" ];then
+        echo "Version in $1 is incorrect, exiting!"
+        exit 1
+fi
+
+if [ -z "$name" ];then
+        echo "Package name in $1 is incorrect, exiting!"
+        exit 1
+fi
+
+echo "name:"$name":"
+echo "version:"$version":"
+echo "release:"$release":"
+
 cd ..
 rm -rf rpmbuild
 mkdir -p rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
