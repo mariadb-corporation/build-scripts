@@ -18,7 +18,7 @@ if [ -z $threads ] ; then
 fi
 
 
-cp /home/ec2-user/test-scripts/maxscale.cnf.template.$template /home/ec2-user/test-scripts/MaxScale.cnf
+cp /usr/local/skysql/maxscale/system-test/cnf/maxscale.cnf.template.$template /home/ec2-user/test-scripts/MaxScale.cnf
 if [ $? -ne 0 ] ; then
 	echo "error copying maxscale.cnf file"
 fi
