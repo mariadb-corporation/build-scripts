@@ -13,10 +13,17 @@ if [ -z $template ] ; then
   template="replication"
 fi
 
+if [ -z $threads ] ; then
+	threads=1
+fi
+
+
 cp /home/ec2-user/test-scripts/maxscale.cnf.template.$template /home/ec2-user/test-scripts/MaxScale.cnf
 if [ $? -ne 0 ] ; then
 	echo "error copying maxscale.cnf file"
 fi
+
+sed -i "s/###threads###/$threads/"  /home/ec2-user/test-scripts/MaxScale.cnf
 
 for i in $(seq 1 4)
 do

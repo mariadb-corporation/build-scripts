@@ -23,12 +23,12 @@ threads=###threads###
 #	monitor_interval=<sampling interval in milliseconds,
 #                          default value is 10000>
 
-[Galera Monitor]
+[MySQL Monitor]
 type=monitor
-module=galeramon
-servers=server1,server2,server3,server4
+module=mysqlmon
+servers= server1, server2,server3  ,server4,server5
 user=skysql
-passwd=skysql
+passwd= skysql
 
 # A series of service definition
 #
@@ -47,18 +47,30 @@ passwd=skysql
 
 [RW Split Router]
 type=service
-router=readwritesplit
-servers=server1,server2,server3,server4
+router= readwritesplit
+servers=server1,     server2,              server3,server4
 user=skysql
 passwd=skysql
+filters=QLA
 
-[Read Connection Router]
+[Read Connection Router Slave]
 type=service
 router=readconnroute
-router_options=slave
+router_options= slave
 servers=server1,server2,server3,server4
 user=skysql
 passwd=skysql
+filters=QLA
+
+[Read Connection Router Master]
+type=service
+router=readconnroute
+router_options=master
+servers=server1,server2,server3,server4
+user=skysql
+passwd=skysql
+filters=QLA
+
 
 [HTTPD Router]
 type=service
@@ -86,12 +98,17 @@ protocol=MySQLClient
 port=4006
 #socket=/tmp/rwsplit.sock
 
-[Read Connection Listener]
+[Read Connection Listener Slave]
 type=listener
-service=Read Connection Router
+service=Read Connection Router Slave
+protocol=MySQLClient
+port=4009
+
+[Read Connection Listener Master]
+type=listener
+service=Read Connection Router Master
 protocol=MySQLClient
 port=4008
-#socket=/tmp/readconn.sock
 
 [Debug Listener]
 type=listener
@@ -131,3 +148,8 @@ type=server
 address=###server_IP_4###
 port=3306
 protocol=MySQLBackend
+
+[QLA]
+type=filter
+module=qlafilter
+options=/home/ec2-user/QueryLog

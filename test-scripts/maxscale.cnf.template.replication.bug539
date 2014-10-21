@@ -45,8 +45,8 @@ servers=server1,server2,server3,server4
 max_slave_connections=100%
 use_sql_variables_in=master
 router_options=slave_selection_criteria=LEAST_BEHIND_MASTER
-user=skysq√l
-passwd=mskysql
+user=skysql
+passwd=skysql
 filters=hints
 
 [Debug Interface]
