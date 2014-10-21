@@ -10,6 +10,10 @@ image_name="$1"
 IP_end="$2"
 N="$3"
 
+if [ -z $MariaDBVersion ] ; then
+	MariaDBVersion="5.5"
+fi
+
 Master_IP=`expr $IP_end + 1`
 First_slave=`expr $IP_end + 2`
 
@@ -26,7 +30,7 @@ for i in $(seq $IP_end $x)
 do
     if [ "$i" != "$IP_end" ] ; then
         if [ "$image_type" != "RPM" ] ; then
-                scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/apt_files/$image_name/* root@192.168.122.$i:/etc/apt/sources.list.d/
+                scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/apt_files-$MariaDBVersion/$image_name/* root@192.168.122.$i:/etc/apt/sources.list.d/
                 ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'apt-get update; apt-get install -y --force-yes mariadb-server mariadb-client'
 		ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'sed -i "s/bind-address/#bind-address/g" /etc/mysql/my.cnf'
 		ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'ln -s /etc/apparmor.d/usr.sbin.mysqld /etc/apparmor.d/disable/usr.sbin.mysqld; service apparmor restart'
@@ -37,7 +41,7 @@ do
 		        ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'zypper -n install mariadb mariadb-client'
                         dir="/etc/my.cnf.d/"
 		else
-			scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/yum_files/$image_name/* root@192.168.122.$i:/etc/yum.repos.d/
+			scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/yum_files-$MariaDBVersion/$image_name/* root@192.168.122.$i:/etc/yum.repos.d/
 			echo $1 | grep -i "centos7"
 			if [ $? == 0 ] ; then
 				ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'yum clean all; yum install -y mariadb-server mariadb'

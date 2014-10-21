@@ -10,6 +10,11 @@ image_name="$1"
 IP_end="$2"
 N="$3"
 
+if [ -z $MariaDBVersion ] ; then
+        MariaDBVersion="5.5"
+fi
+
+
 Master_IP=`expr $IP_end + 1`
 First_slave=`expr $IP_end + 2`
 
@@ -27,9 +32,9 @@ for i in $(seq $Master_IP $x)
 do
 	scp -r -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/test-setup-scripts/galera/* root@192.168.122.$i:/root/
         if [ "$image_type" != "RPM" ] ; then
-		scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/apt_files/$image_name/* root@192.168.122.$i:/etc/apt/sources.list.d/
+		scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/apt_files-$MariaDBVersion/$image_name/* root@192.168.122.$i:/etc/apt/sources.list.d/
         else 
-		scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/yum_files/$image_name/* root@192.168.122.$i:/etc/yum.repos.d/
+		scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/yum_files-$MariaDBVersion/$image_name/* root@192.168.122.$i:/etc/yum.repos.d/
         fi
 
 	ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "/root/install-packages.sh ; /root/firewall-setup.sh 192.168.122.$IP_end; /root/configure.sh 192.168.122.$i node$i"
