@@ -6,7 +6,7 @@
 set -x
 
 template=$1
-ip=$2
+IP_end=$2
 
 
 if [ -z $template ] ; then

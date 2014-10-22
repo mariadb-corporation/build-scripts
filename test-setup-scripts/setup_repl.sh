@@ -87,6 +87,7 @@ ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o Strict
 x=`expr $IP_end + $N - 1`
 for i in $(seq $First_slave $x)
 do
+	scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/test-setup-scripts/create_*_user.sql root@192.168.122.$i:/root/
 	ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'mysql < /root/create_repl_user.sql'
 	log_file=`ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$Master_IP 'echo "SHOW MASTER STATUS\G;" | mysql ' | grep "File:" | sed "s/File://" | sed "s/ //g"`
 	log_pos=`ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$Master_IP 'echo "SHOW MASTER STATUS\G;" | mysql ' | grep "Position:" | sed "s/Position://" | sed "s/ //g"`
