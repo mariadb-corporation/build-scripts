@@ -68,6 +68,7 @@ do
     ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'iptables -I INPUT -p tcp --dport 4442 -j ACCEPT -m state --state NEW'
     ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'iptables -I INPUT -p tcp -m tcp --dport 6444 -j ACCEPT'
     ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'iptables -I INPUT -p tcp --dport 6444 -j ACCEPT -m state --state NEW'
+    ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i '/etc/init.d/iptables save'
 
     if [ "$i" != "$IP_end" ] ; then
 	echo $1 | grep -i "centos7"
