@@ -61,9 +61,24 @@ if [ "$cmake" == "yes" ] ; then
    	yum install -y --skip-broken $cmake_cmd
      fi
    fi
-   $cmake_cmd .  $cmake_flags
-   make
+   mkdir _build
+   chmod -R a-w .
+   chmod u+w _build
+   cd _build
+   $cmake_cmd ..  $cmake_flags
+   if [ -d ../coverity ] ; then
+	tar xzvf ../coverity/cov-analysis-linux*.tar.gz
+	export PATH=$PATH:`pwd`/cov-analysis-linux64-7.5.0/bin/
+	cov-build --dir cov-int make
+        tar czvf maxscale.tgz cov-int
+   else
+        make
+   fi
+ 
    make package
+   cd ..
+   chmod -R u+wr .
+   cp _build/*.rpm .
 else
 
 version=`cat  "$1" | sed -ne 's/^%define version\s*\([^\s]*\)$/\1/p' | sed 's/ //'`

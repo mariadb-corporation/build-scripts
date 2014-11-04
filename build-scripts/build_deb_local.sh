@@ -25,11 +25,36 @@ if [ "$cmake" == "yes" ] ; then
 #	apt-get remove -y --force-yes locales language-pack-en-base language-pack-en ubuntu-minimal
 #  fi
   apt-get install -y --force-yes cmake
-  apt-get install -y --force-yes gcc g++ ncurses-dev bison build-essential libssl-dev libaio-dev libmariadbclient-dev  libmariadbd-dev mariadb-server perl make libtool librabbitmq-dev
-  cmake . --debug-output $cmake_flags
-  make
+  apt-get install -y --force-yes gcc g++ ncurses-dev bison build-essential libssl-dev libaio-dev perl make libtool librabbitmq-dev
+
+  apt-get install -y --force-yes libmariadbclient-dev libmariadbd-dev mariadb-server
+#  apt-get install -y --force-yes libmariadb-client-lgpl-dev libmariadbd-dev mariadb-server
+
+#  cmake . --debug-output $cmake_flags
+
+#  make
+#  make package
+
+  mkdir _build
+  chmod -R a-w .
+  chmod u+w _build
+  cd _build
+  cmake ..  $cmake_flags
+   if [ -d ../coverity ] ; then
+        tar xzvf ../coverity/cov-analysis-linux*.tar.gz
+        export PATH=$PATH:`pwd`/cov-analysis-linux64-7.5.0/bin/
+        cov-build --dir cov-int make
+        tar czvf maxscale.tgz cov-int
+   else
+        make
+   fi
+
   make package
+
   cp _CPack_Packages/Linux/DEB/*.deb ../
+  cd ..
+  chmod -R u+wr .
+  cp _build/*.deb .
 else
   build_req=`dpkg-checkbuilddeps  2>&1 | grep "Unmet build dependencies" | sed "s/dpkg-checkbuilddeps: Unmet build dependencies: //" | sed "s/([^)]*)//g"`
 

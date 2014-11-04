@@ -32,9 +32,15 @@ ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostK
 
 scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r  ./* root@$IP:$build_dir
 
+
+
 if [ $?	-ne 0 ] ; then
         echo "Error copying stuff to $image machine"
         exit 2
+fi
+
+if [ "$Coverity" == "yes" ] ; then
+	scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r  /home/ec2-user/build-scripts/coverity root@$IP:$build_dir
 fi
 
 orig_image=$image
@@ -98,6 +104,16 @@ else
 	fi
 fi
 
+if [ "$Coverity" == "yes" ] ; then
+  scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:$build_dir/_build/maxscale.tgz .
+
+curl --form token=DayIHFlOnCrr6Iizd98jVQ \
+  --form email=timofey.turenko@skysql.com \
+  --form file=@maxscale.tgz \
+  --form version="1.0.2" \
+  --form description="develop branch" \
+  https://scan.coverity.com/builds?project=mariadb-corporation%2FMaxScale
+fi
 echo "package building for $target done!"
 
 /home/ec2-user/build-scripts/create_remote_repo.sh $image $IP $target
