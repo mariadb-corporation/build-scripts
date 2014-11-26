@@ -39,7 +39,10 @@ if [ "$cmake" == "yes" ] ; then
      zypper -n install librabbitmq-devel
      zypper -n install libedit-devel
      zypper -n install systemtap-sdt-devel
-     zypper -n install mariadb-devel
+#     zypper -n install mariadb-devel
+  wget https://downloads.mariadb.org/f/mariadb-5.5.40/bintar-linux-glibc_214-x86_64/mariadb-5.5.40-linux-glibc_214-x86_64.tar.gz
+  tar xzvf mariadb-5.5.40-linux-glibc_214-x86_64.tar.gz -C /usr/ --strip-components=1
+  cmake_flags+=" -DERRMSG=/usr/share/english/errmsg.sys -DEMBEDDED_LIB=/usr/lib/ "
 #     zypper -n install cmake
    else
      yum clean all 

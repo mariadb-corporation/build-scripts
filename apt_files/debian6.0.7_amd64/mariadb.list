@@ -2,5 +2,5 @@
 #deb-src http://mirror.netinch.com/pub/mariadb/repo/5.5/debian  squeeze main
 #deb http://repo.percona.com/apt  squeeze main
 #deb-src http://repo.percona.com/apt  squeeze main
-deb http://ftp.fi.debian.org/debian/ jessie main
+#deb http://ftp.fi.debian.org/debian/ jessie main
 

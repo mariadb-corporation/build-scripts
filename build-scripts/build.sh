@@ -85,7 +85,7 @@ fi
 #fi
 
 if [ "$gcov" == "yes" ] ; then
-	export cmake_flags="-DGCOV=Y"
+	export cmake_flags="$cmake_flags -DGCOV=Y"
 fi
 
 if [ "$BUILD_TEST" == "yes" ] ; then
