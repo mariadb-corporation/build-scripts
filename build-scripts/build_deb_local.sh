@@ -30,6 +30,7 @@ if [ "$cmake" == "yes" ] ; then
 
 #  apt-get install -y --force-yes libmariadbclient-dev libmariadbd-dev mariadb-server
   wget https://downloads.mariadb.org/f/mariadb-5.5.40/bintar-linux-glibc_214-x86_64/mariadb-5.5.40-linux-glibc_214-x86_64.tar.gz
+      #https://downloads.mariadb.org/f/mariadb-5.5.40/bintar-linux-glibc_214-x86_64/mariadb-5.5.40-linux-glibc_214-x86_64.tar.gz
   tar xzvf mariadb-5.5.40-linux-glibc_214-x86_64.tar.gz -C /usr/ --strip-components=1
 #  apt-get install -y --force-yes libmariadb-client-lgpl-dev libmariadbd-dev mariadb-server
 
@@ -58,6 +59,7 @@ if [ "$cmake" == "yes" ] ; then
   cd ..
   chmod -R u+wr .
   cp _build/*.deb .
+  cp *.deb ..
 else
   build_req=`dpkg-checkbuilddeps  2>&1 | grep "Unmet build dependencies" | sed "s/dpkg-checkbuilddeps: Unmet build dependencies: //" | sed "s/([^)]*)//g"`
 

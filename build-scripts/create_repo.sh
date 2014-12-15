@@ -7,8 +7,12 @@ sourcedir=$2
 rm -rf $destdir
 mkdir -p  $destdir/
 
+zypper --version
+z_res=$?
 yum --version
-if [ $? -eq 127 ] ; then
+y_res=$?
+
+if [ $z_res -eq 127 ] && [ $y_res -eq 127 ] ; then
 # DEB-based system
 	cd $destdir
 	debian_ver=`cat /etc/debian_version`
@@ -62,6 +66,7 @@ if [ $? -eq 127 ] ; then
 else
 # RPM-based system
 	yum install -y createrepo
+	zypper -n install createrepo
 	echo "%_signature gpg" >> ~/.rpmmacros
 	echo "%_gpg_name  MariaDBManager" >>  ~/.rpmmacros
 	rpm --resign $sourcedir/*.rpm
