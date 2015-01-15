@@ -49,6 +49,8 @@ if [ "$cmake" == "yes" ] ; then
      yum install -y --skip-broken gcc gcc-c++ ncurses-devel bison glibc-devel libgcc perl make libtool openssl-devel libaio libaio-devel librabbitmq-devel libedit-devel
      yum install -y --skip-broken libedit-devel
      yum install -y --skip-broken systemtap-sdt-devel
+     yum install -y rpm-sign
+     yum install -y gnupg
      cat /etc/redhat-release | grep "release 7"
 #     if [ $? == 0 ] ; then
 #	yum install -y mariadb-devel mariadb-embedded-devel  
@@ -58,10 +60,14 @@ if [ "$cmake" == "yes" ] ; then
      cat /etc/redhat-release | grep "release 6"
      rs=$?
      cat /etc/redhat-release | grep "release 5"
-     if [[ $? == 0 || $rs == 0 ]] ; then
+     r5=$?
+     if [[ $r5 == 0 || $rs == 0 ]] ; then
 	echo "cmake is already manually installed"
      else
    	yum install -y --skip-broken $cmake_cmd
+     fi
+     if [[ $r5 == 0 ]] ; then
+        yum remove -y libedit-devel libedit
      fi
    fi
    mkdir _build

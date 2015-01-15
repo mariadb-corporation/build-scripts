@@ -25,7 +25,7 @@ fi
 if [ -z "$build_dir" ] ; then
 	build_dir="/home/ec2-user/workspace/"
 fi
-
+ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "rm -rf $build_dir/*"
 echo "copying stuff to $image machine"
 echo "scp  -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r ./* root@$IP:$build_dir"
 ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "mkdir -p $build_dir"

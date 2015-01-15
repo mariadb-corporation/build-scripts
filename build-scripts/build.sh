@@ -17,7 +17,7 @@ target=`echo $target | tr -cd "[:print:]" `
 echo "target $target"
 
 if [ "$source" == "TAG" ] ; then
-	git reset --hard $tag-$value
+	git reset --hard $value
 fi
 
 if [ "$source" == "BRANCH" ] ; then

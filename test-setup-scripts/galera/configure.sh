@@ -63,6 +63,11 @@ if [[ "$linux_name" == "CentOS" || "$linux_name" == "Fedora" ]]; then
 	        echo "Error generating galera configuration file"
         	exit 1
 	fi
+	if [[ "$xtrabackup" == "yes" ]]; then
+		sed -i "s/wsrep_sst_method=rsync/wsrep_sst_method=xtrabackup-v2/" /etc/my.cnf.d/skysql-galera.cnf
+	#	yum install -y percona-xtrabackup-20
+	fi
+	yum install -y percona-xtrabackup-20
 elif [[ "$linux_name" == "Debian" || "$linux_name" == "Ubuntu" ]]; then
         echo "!includedir /etc/mysql/conf.d/" > /etc/mysql/my.cnf
         sed -e "s/###NODE-ADDRESS###/$privateip/g" \
@@ -76,6 +81,11 @@ elif [[ "$linux_name" == "Debian" || "$linux_name" == "Ubuntu" ]]; then
         	echo "Error generating galera configuration file"
 	        exit 1
 	fi
+        if [[ "$xtrabackup" == "yes" ]]; then
+                sed -i "s/wsrep_sst_method=rsync/wsrep_sst_method=xtrabackup-v2/" /etc/my.cnf.d/skysql-galera.cnf
+                apt-get install -y --force-yes percona-xtrabackup-20
+        fi
+	#apt-get install -y --force-yes percona-xtrabackup-20
 fi
 
 # Setting up MariaDB users

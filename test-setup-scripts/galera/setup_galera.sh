@@ -37,7 +37,7 @@ do
 		scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/yum_files-$MariaDBVersion/$image_name/* root@192.168.122.$i:/etc/yum.repos.d/
         fi
 
-	ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "/root/install-packages.sh ; /root/firewall-setup.sh 192.168.122.$IP_end; /root/configure.sh 192.168.122.$i node$i"
+	ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "export xtrabackup=$xtrabackup ; /root/install-packages.sh ; /root/firewall-setup.sh 192.168.122.$IP_end; /root/configure.sh 192.168.122.$i node$i"
 
 done
 
@@ -56,6 +56,18 @@ do
 	ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "/etc/init.d/mysql start --wsrep-cluster-address=gcomm://192.168.122.$Master_IP" &
 	sleep 10
 done
+
+#ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$x "/etc/init.d/mysql start --wsrep-cluster-address=gcomm://"
+#sleep 10
+#ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$x "echo 'CREATE DATABASE IF NOT EXISTS test;' | mysql "
+
+
+#y=`expr $IP_end + $N - 2`
+#for i in $(seq $Master_IP $y)
+#do
+#       ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "/etc/init.d/mysql start --wsrep-cluster-address=gcomm://192.168.122.$x" &
+#       sleep 10
+#done
 
 
 disown

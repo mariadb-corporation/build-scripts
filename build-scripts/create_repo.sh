@@ -66,13 +66,17 @@ if [ $z_res -eq 127 ] && [ $y_res -eq 127 ] ; then
 else
 # RPM-based system
 	yum install -y createrepo
+	zypper -n remove patterns-openSUSE-minimal_base-conflicts
 	zypper -n install createrepo
 	echo "%_signature gpg" >> ~/.rpmmacros
 	echo "%_gpg_name  MariaDBManager" >>  ~/.rpmmacros
 	rpm --resign $sourcedir/*.rpm
+	gpg --output repomd.xml.key --sign $sourcedir/repodata/repomd.xml
 	cp $sourcedir/* $destdir/
 	pushd ${destdir} >/dev/null 2>&1
 	    createrepo -d -s sha .
 	popd >/dev/null 2>&1
+	gpg -a --detach-sign $destdir/repodata/repomd.xml
+#	cp repomd.xml.key $destdir/repodata/
 	
 fi
