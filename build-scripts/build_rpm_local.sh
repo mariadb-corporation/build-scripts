@@ -35,15 +35,19 @@ rm -rf rpmbuild
 if [ "$cmake" == "yes" ] ; then
    cmake_cmd="cmake"
    if [ $zy != 0 ] ; then
-     zypper -n install gcc gcc-c++ ncurses-devel bison glibc-devel cmake libgcc_s1 perl make libtool libopenssl-devel libaio libaio-devel libedit-devel 
+     zypper -n install gcc gcc-c++ ncurses-devel bison glibc-devel cmake libgcc_s1 perl make libtool libopenssl-devel libaio libaio-devel 
      zypper -n install librabbitmq-devel
-     zypper -n install libedit-devel
+     cat /etc/*-release | grep "SUSE Linux Enterprise Server 11"
+     if [ $? != 0 ] ; then 
+       zypper -n install libedit-devel
+     fi
+
      zypper -n install systemtap-sdt-devel
 #     zypper -n remove mariadb-*
-     zypper -n --gpg-auto-import-keys --no-gpg-checks install MariaDB-devel MariaDB-client-5.5.41 MariaDB-server 
-#  wget https://downloads.mariadb.org/f/mariadb-5.5.40/bintar-linux-glibc_214-x86_64/mariadb-5.5.40-linux-glibc_214-x86_64.tar.gz
-#  tar xzvf mariadb-5.5.40-linux-glibc_214-x86_64.tar.gz -C /usr/ --strip-components=1
-#  cmake_flags+=" -DERRMSG=/usr/share/english/errmsg.sys -DEMBEDDED_LIB=/usr/lib/ "
+#     zypper -n --gpg-auto-import-keys --no-gpg-checks install MariaDB-devel MariaDB-client-5.5.41 MariaDB-server 
+  wget https://downloads.mariadb.org/f/mariadb-5.5.41/bintar-linux-glibc_214-x86_64/mariadb-5.5.41-linux-glibc_214-x86_64.tar.gz
+  tar xzvf mariadb-5.5.41-linux-glibc_214-x86_64.tar.gz -C /usr/ --strip-components=1
+  cmake_flags+=" -DERRMSG=/usr/share/english/errmsg.sys -DEMBEDDED_LIB=/usr/lib/ "
 
 #     zypper -n install cmake
    else
@@ -87,6 +91,16 @@ if [ "$cmake" == "yes" ] ; then
    fi
  
    make package
+
+  rm ../CMakeCache.txt
+  rm CMakeCache.txt
+
+
+if [ "$BUILD_RABBITMQ" == "yes" ] ; then
+  cmake ../rabbitmq_consumer/  $cmake_flags 
+  make package
+fi
+
    cd ..
    chmod -R u+wr .
    cp _build/*.rpm .

@@ -21,6 +21,7 @@ ssh -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.1
 ssh -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.2 "rm /root/generate_hosts.sh"
 ssh -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.2 "echo kernel.core_pattern=/tmp/core.%e.%p.%h.%t >> /etc/sysctl.conf"
 ssh -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.2 "echo *  soft  core  unlimited >> /etc/security/limits.d/cores.conf"
+ssh -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.2 "echo nameserver 192.168.122.1 >> /etc/resolv.conf"
 ssh -i $3 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.2 "shutdown now"
 sleep 60
 cat /home/ec2-user/kvm/f | sudo socat STDIO UNIX-CONNECT:/tmp/socket002

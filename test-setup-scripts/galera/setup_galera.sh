@@ -26,7 +26,7 @@ if [ "$image_type" != "RPM" ] && [ "$image_type" != "DEB" ] ; then
        	echo "unknown image type: should be RPM or DEB"
         exit 1
 fi
-
+ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "echo nameserver 192.168.122.1 >> /etc/resolv.conf"
 x=`expr $IP_end + $N - 1`
 for i in $(seq $Master_IP $x)
 do

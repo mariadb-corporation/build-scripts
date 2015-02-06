@@ -77,5 +77,6 @@ else
        export cmake_flags="$cmake_flags -DSTATIC_EMBEDDED=Y"
 fi
 
+export cmake_flags="$cmake_flags  -DPACKAGE=Y"
 /home/ec2-user/build-scripts/build_packages_one.sh $spec_name . $target $image $cmake
 

@@ -61,6 +61,14 @@ if [ "$cmake" == "yes" ] ; then
 
   make package
 
+  rm ../CMakeCache.txt
+  rm CMakeCache.txt
+
+if [ "$BUILD_RABBITMQ" == "yes" ] ; then
+  cmake ../rabbitmq_consumer/  $cmake_flags -DERRMSG=/usr/share/english/errmsg.sys -DEMBEDDED_LIB=/usr/lib/
+  make package
+fi
+
   cp _CPack_Packages/Linux/DEB/*.deb ../
   cd ..
   chmod -R u+wr .
