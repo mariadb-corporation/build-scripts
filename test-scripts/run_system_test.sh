@@ -2,7 +2,7 @@
 
 # $1 - Test_name
 
-set -x
+#set -x
 export Test_name=$1
 
 if [ "$remote_test_machine" == "yes" ] ; then
@@ -24,7 +24,7 @@ else
 
 	. /usr/local/skysql/maxscale/system-test/set_env_f.sh $replicationIP $galeraIP
 
-	/usr/local/skysql/maxscale/system-test/configure_maxscale.sh
+#	/usr/local/skysql/maxscale/system-test/configure_maxscale.sh
 
 	/usr/local/skysql/maxscale/system-test/$Test_name
 	res=$?

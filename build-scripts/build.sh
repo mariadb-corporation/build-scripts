@@ -69,6 +69,8 @@ fi
 
 if [ "$BUILD_RABBITMQ" == "yes" ] ; then
         export cmake_flags="$cmake_flags -DBUILD_RABBITMQ=Y"
+else
+	export cmake_flags="$cmake_flags -DBUILD_RABBITMQ=N"
 fi
 
 if [ "$Dynlib" == "yes" ] ; then
