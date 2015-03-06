@@ -1,0 +1,1 @@
+rsync -avz -d --delete --delete-excluded -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"  ec2-user@jenkins.engskysql.com:/home/ec2-user/.jenkins /home/ec2-user/.jenkins
