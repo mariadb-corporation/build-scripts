@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# $1 - Test_name
+# $1 - test_name
 
 #set -x
-export Test_name=$1
+export test_name=$1
 
 if [ "$remote_test_machine" == "yes" ] ; then
 	key=`cat /home/ec2-user/test-machines/image_name_$test_machine_ip`
@@ -18,7 +18,7 @@ if [ "$remote_test_machine" == "yes" ] ; then
 
 
 
-	ssh -i /home/ec2-user/KEYS/$key  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$test_machine_ip /root/run_system_test_local.sh $Test_name $replicationIP $galeraIP
+	ssh -i /home/ec2-user/KEYS/$key  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$test_machine_ip /root/run_system_test_local.sh $test_name $replicationIP $galeraIP
  	res=$?
 else
 
@@ -26,7 +26,7 @@ else
 
 #	/usr/local/skysql/maxscale/system-test/configure_maxscale.sh
 
-	/usr/local/skysql/maxscale/system-test/$Test_name
+	/usr/local/skysql/maxscale/system-test/$test_name
 	res=$?
 fi
 

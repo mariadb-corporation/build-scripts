@@ -2,8 +2,8 @@
 
 set -x
 
-date_str=`date +%Y%m%d`
-logs_dir="/var/www/html/test/logs/$date_str/$value/$image/$Test_name/"
+date_str=`date +%Y%m%d-%H`
+logs_dir="/var/www/html/test/logs/$date_str/$value/$image/$test_name/"
 mkdir -p $logs_dir
 
 echo "log_dir:         $logs_dir"

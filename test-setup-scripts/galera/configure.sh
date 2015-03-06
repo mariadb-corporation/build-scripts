@@ -94,10 +94,10 @@ fi
 sleep 5
 
 mysql -u root -e "DELETE FROM mysql.user WHERE user = ''; \
-GRANT ALL PRIVILEGES ON *.* TO $rep_username@'%' IDENTIFIED BY '$rep_password'; \
-GRANT ALL PRIVILEGES ON *.* TO $db_username@'%' IDENTIFIED BY '$db_password'; \
-GRANT ALL PRIVILEGES ON *.* TO $rep_username@'localhost' IDENTIFIED BY '$rep_password'; \
-GRANT ALL PRIVILEGES ON *.* TO $db_username@'localhost' IDENTIFIED BY '$db_password'; \
+GRANT ALL PRIVILEGES ON *.* TO $rep_username@'%' IDENTIFIED BY '$rep_password'  WITH GRANT OPTION; \
+GRANT ALL PRIVILEGES ON *.* TO $db_username@'%' IDENTIFIED BY '$db_password'  WITH GRANT OPTION; \
+GRANT ALL PRIVILEGES ON *.* TO $rep_username@'localhost' IDENTIFIED BY '$rep_password'  WITH GRANT OPTION; \
+GRANT ALL PRIVILEGES ON *.* TO $db_username@'localhost' IDENTIFIED BY '$db_password'  WITH GRANT OPTION; \
 FLUSH PRIVILEGES;"
 
 # Check users before stopping the server

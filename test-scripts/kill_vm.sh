@@ -3,10 +3,10 @@
 IP=$1
 
 IFS=. read ip1 ip2 ip3 ip4 <<< "$IP"
-echo $ip1
-echo $ip2
-echo $ip3
-echo $ip4
+#echo $ip1
+#echo $ip2
+#echo $ip3
+#echo $ip4
 /home/ec2-user/vm-scripts/stop_one_VM.sh $ip4
 echo "sleeping 5 seconds"
 sleep 5

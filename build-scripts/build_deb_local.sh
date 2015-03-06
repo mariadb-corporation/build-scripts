@@ -32,11 +32,12 @@ if [ "$cmake" == "yes" ] ; then
   libc6_ver=`dpkg -l | awk '$2=="libc6" { print $3 }'`
   dpkg --compare-versions $libc6_ver lt 2.14
   if [ $? != 0 ] ; then
-    wget https://downloads.mariadb.org/f/mariadb-5.5.41/bintar-linux-glibc_214-x86_64/mariadb-5.5.41-linux-glibc_214-x86_64.tar.gz
-    tar xzvf mariadb-5.5.41-linux-glibc_214-x86_64.tar.gz -C /usr/ --strip-components=1
+    wget https://downloads.mariadb.org/f/mariadb-5.5.42/bintar-linux-glibc_214-x86_64/mariadb-5.5.42-linux-glibc_214-x86_64.tar.gz
+    tar xzvf mariadb-5.5.42-linux-glibc_214-x86_64.tar.gz -C /usr/ --strip-components=1
   else 
-    wget https://downloads.mariadb.org/interstitial/mariadb-5.5.41/bintar-linux-x86_64/mariadb-5.5.41-linux-x86_64.tar.gz
-    tar xzvf mariadb-5.5.41-linux-x86_64.tar.gz -C /usr/ --strip-components=1
+    wget https://downloads.mariadb.org/interstitial/mariadb-5.5.42/bintar-linux-x86_64/mariadb-5.5.42-linux-x86_64.tar.gz
+#    wget https://downloads.mariadb.org/interstitial/mariadb-5.5.41/bintar-linux-x86_64/mariadb-5.5.41-linux-x86_64.tar.gz
+    tar xzvf mariadb-5.5.42-linux-x86_64.tar.gz -C /usr/ --strip-components=1
   fi
 #  apt-get install -y --force-yes libmariadb-client-lgpl-dev libmariadbd-dev mariadb-server
 

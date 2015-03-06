@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# $1 - Test_name
+# $1 - test_name
 
 set -x
-export Test_name=$1
+export test_name=$1
 replicationIP=$2
 galeraIP=$3
 
@@ -11,4 +11,4 @@ galeraIP=$3
 
 /usr/local/skysql/maxscale/system-test/configure_maxscale.sh
 
-/usr/local/skysql/maxscale/system-test/$Test_name
+/usr/local/skysql/maxscale/system-test/$test_name

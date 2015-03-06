@@ -45,8 +45,8 @@ if [ "$cmake" == "yes" ] ; then
      zypper -n install systemtap-sdt-devel
 #     zypper -n remove mariadb-*
 #     zypper -n --gpg-auto-import-keys --no-gpg-checks install MariaDB-devel MariaDB-client-5.5.41 MariaDB-server 
-  wget https://downloads.mariadb.org/f/mariadb-5.5.41/bintar-linux-glibc_214-x86_64/mariadb-5.5.41-linux-glibc_214-x86_64.tar.gz
-  tar xzvf mariadb-5.5.41-linux-glibc_214-x86_64.tar.gz -C /usr/ --strip-components=1
+  wget https://downloads.mariadb.org/f/mariadb-5.5.42/bintar-linux-glibc_214-x86_64/mariadb-5.5.42-linux-glibc_214-x86_64.tar.gz
+  tar xzvf mariadb-5.5.42-linux-glibc_214-x86_64.tar.gz -C /usr/ --strip-components=1
   cmake_flags+=" -DERRMSG=/usr/share/english/errmsg.sys -DEMBEDDED_LIB=/usr/lib/ "
 
 #     zypper -n install cmake

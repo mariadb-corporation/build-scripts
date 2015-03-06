@@ -2,7 +2,7 @@
 
 set -x
 
-template_line=`cat /usr/local/skysql/maxscale/system-test/templates | grep $Test_name`
+template_line=`cat /usr/local/skysql/maxscale/system-test/templates | grep $test_name`
 a=( $template_line )
 template=${a[1]}
 
