@@ -48,6 +48,9 @@ echo "image: $image"
 image_type=`cat /home/ec2-user/kvm/images/image_type | grep "$orig_image".img | sed "s/$orig_image.img//" | sed "s/ //g"`
 echo "image type is $image_type"
 
+x_user="root"
+#x_user="ec2-user"
+
 if [ "$image_type" != "RPM" ] && [ "$image_type" != "DEB" ] ; then
         echo "unknown image type: should be RPM or DEB"
         exit 1
@@ -61,7 +64,8 @@ else
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/vm_setup_scripts/$image.sh root@$IP:/home/ec2-user/
 		ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP /home/ec2-user/$image.sh
 
-		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/build-scripts/build_rpm_local.sh  ec2-user@$IP:/home/ec2-user/
+		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/build-scripts/*.sh  $x_user@$IP:/home/ec2-user/
+#                scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/build-scripts/*.sh  root@$IP:/home/ec2-user/
 		if [ $? -ne 0 ] ; then
 		        echo "Error copying build scripts to $image machine"
 		        exit 3
@@ -75,11 +79,12 @@ else
 		fi
 
 		echo "copying repo to the repo/$target/$image"
-		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/rpmbuild/RPMS/noarch/* /home/ec2-user/pre-repo/$target/$image
-		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/rpmbuild/RPMS/i386/* /home/ec2-user/pre-repo/$target/$image
-		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/rpmbuild/RPMS/x86_64/* /home/ec2-user/pre-repo/$target/$image
-		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:$build_dir/*.rpm /home/ec2-user/pre-repo/$target/$image
-		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/rpmbuild/SOURCES/* /home/ec2-user/pre-repo/$target/SRC
+	
+		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $x_user@$IP:/home/ec2-user/rpmbuild/RPMS/noarch/* /home/ec2-user/pre-repo/$target/$image
+		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $x_user@$IP:/home/ec2-user/rpmbuild/RPMS/i386/* /home/ec2-user/pre-repo/$target/$image
+		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $x_user@$IP:/home/ec2-user/rpmbuild/RPMS/x86_64/* /home/ec2-user/pre-repo/$target/$image
+		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $x_user@$IP:$build_dir/*.rpm /home/ec2-user/pre-repo/$target/$image
+		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $x_user@$IP:/home/ec2-user/rpmbuild/SOURCES/* /home/ec2-user/pre-repo/$target/SRC
 	else
                 echo "copying build script to $image machine"
 		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/apt_files/$image/* root@$IP:/etc/apt/sources.list.d/
@@ -87,7 +92,7 @@ else
                 scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/vm_setup_scripts/$image.sh root@$IP:/home/ec2-user/
                 ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP /home/ec2-user/$image.sh
 
-                scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/build-scripts/build_deb_local.sh  ec2-user@$IP:/home/ec2-user/
+                scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r /home/ec2-user/build-scripts/*.sh  $x_user@$IP:/home/ec2-user/
                 if [ $? -ne 0 ] ; then
                         echo "Error copying build scripts to $image machine"
                         exit 3
@@ -101,13 +106,13 @@ else
                 fi
                 echo "copying repo to the repo/$target/$image"
                 mkdir -p /home/ec2-user/pre-repo/$target/$image
-                scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:/home/ec2-user/*.deb /home/ec2-user/pre-repo/$target/$image
-		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:$build_dir/../*.deb /home/ec2-user/pre-repo/$target/$image
+                scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $x_user@$IP:/home/ec2-user/*.deb /home/ec2-user/pre-repo/$target/$image
+		scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $x_user@$IP:$build_dir/../*.deb /home/ec2-user/pre-repo/$target/$image
 	fi
 fi
 
 if [ "$Coverity" == "yes" ] ; then
-  scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ec2-user@$IP:$build_dir/_build/maxscale.tgz .
+  scp -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $x_user@$IP:$build_dir/_build/maxscale.tgz .
 
 curl --form token=DayIHFlOnCrr6Iizd98jVQ \
   --form email=timofey.turenko@skysql.com \

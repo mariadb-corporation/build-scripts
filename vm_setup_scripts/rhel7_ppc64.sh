@@ -1,6 +1,6 @@
 yum install -y wget
-wget http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
-rpm -Uvh epel-release-6-8.noarch.rpm
+#wget http://dl.fedoraproject.org/pub/epel/beta/7/x86_64/epel-release-7-1.noarch.rpm
+#rpm -ivh epel-release-*.noarch.rpm
 
 yum install -y gcc gcc-c++
 wget http://www.cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
@@ -9,3 +9,4 @@ cd cmake-2.8.12.2
 ./bootstrap
 gmake
 make install
+

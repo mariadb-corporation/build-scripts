@@ -14,7 +14,7 @@ fi
 
 cd $build_dir
 
-
+. /home/ec2-user/check_arch.sh
 
 apt-get update
 apt-get install -y dpkg-dev
@@ -27,19 +27,10 @@ if [ "$cmake" == "yes" ] ; then
   apt-get install -y --force-yes cmake
   apt-get install -y --force-yes gcc g++ ncurses-dev bison build-essential libssl-dev libaio-dev perl make libtool 
   apt-get install -y --force-yes librabbitmq-dev
+  apt-get install -y --force-yes libcurl4-openssl-dev
 
-#  apt-get install -y --force-yes libmariadbclient-dev libmariadbd-dev mariadb-server
-  libc6_ver=`dpkg -l | awk '$2=="libc6" { print $3 }'`
-  dpkg --compare-versions $libc6_ver lt 2.14
-  if [ $? != 0 ] ; then
-    wget https://downloads.mariadb.org/f/mariadb-5.5.42/bintar-linux-glibc_214-x86_64/mariadb-5.5.42-linux-glibc_214-x86_64.tar.gz
-    tar xzvf mariadb-5.5.42-linux-glibc_214-x86_64.tar.gz -C /usr/ --strip-components=1
-  else 
-    wget https://downloads.mariadb.org/interstitial/mariadb-5.5.42/bintar-linux-x86_64/mariadb-5.5.42-linux-x86_64.tar.gz
-#    wget https://downloads.mariadb.org/interstitial/mariadb-5.5.41/bintar-linux-x86_64/mariadb-5.5.41-linux-x86_64.tar.gz
-    tar xzvf mariadb-5.5.42-linux-x86_64.tar.gz -C /usr/ --strip-components=1
-  fi
-#  apt-get install -y --force-yes libmariadb-client-lgpl-dev libmariadbd-dev mariadb-server
+  wget $mariadbd_link
+  tar xzvf $mariadbd_file -C /usr/ --strip-components=1
 
 #  cmake . --debug-output $cmake_flags
 

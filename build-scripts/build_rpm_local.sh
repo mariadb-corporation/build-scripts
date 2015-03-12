@@ -13,6 +13,12 @@ fi
 
 cd $build_dir
 
+yum install -y rpmdevtools
+yum install -y wget
+zypper -n install rpmdevtools
+zypper -n install wget
+. /home/ec2-user/check_arch.sh
+
 if [[ "$#" != "2" && "$#" != "3" && "$#" != "4" ]]; then
 	echo "Not enough arguments, usage"
 	echo "./build_rpm.sh path_to_.spec path_to_sources"
@@ -37,6 +43,7 @@ if [ "$cmake" == "yes" ] ; then
    if [ $zy != 0 ] ; then
      zypper -n install gcc gcc-c++ ncurses-devel bison glibc-devel cmake libgcc_s1 perl make libtool libopenssl-devel libaio libaio-devel 
      zypper -n install librabbitmq-devel
+     zypper -n install libcurl-devel
      cat /etc/*-release | grep "SUSE Linux Enterprise Server 11"
      if [ $? != 0 ] ; then 
        zypper -n install libedit-devel
@@ -45,24 +52,29 @@ if [ "$cmake" == "yes" ] ; then
      zypper -n install systemtap-sdt-devel
 #     zypper -n remove mariadb-*
 #     zypper -n --gpg-auto-import-keys --no-gpg-checks install MariaDB-devel MariaDB-client-5.5.41 MariaDB-server 
-  wget https://downloads.mariadb.org/f/mariadb-5.5.42/bintar-linux-glibc_214-x86_64/mariadb-5.5.42-linux-glibc_214-x86_64.tar.gz
-  tar xzvf mariadb-5.5.42-linux-glibc_214-x86_64.tar.gz -C /usr/ --strip-components=1
+  wget $mariadbd_link
+  tar xzvf $mariadbd_file -C /usr/ --strip-components=1
   cmake_flags+=" -DERRMSG=/usr/share/english/errmsg.sys -DEMBEDDED_LIB=/usr/lib/ "
 
 #     zypper -n install cmake
    else
      yum clean all 
-     yum install -y --skip-broken gcc gcc-c++ ncurses-devel bison glibc-devel libgcc perl make libtool openssl-devel libaio libaio-devel librabbitmq-devel libedit-devel
-     yum install -y --skip-broken libedit-devel
-     yum install -y --skip-broken systemtap-sdt-devel
-     yum install -y rpm-sign
-     yum install -y gnupg
-     cat /etc/redhat-release | grep "release 7"
-#     if [ $? == 0 ] ; then
-#	yum install -y mariadb-devel mariadb-embedded-devel  
-#     else
-   	yum install -y --skip-broken MariaDB-devel MariaDB-server
-#     fi
+     yum install -y --skip-broken --nogpgcheck gcc gcc-c++ ncurses-devel bison glibc-devel libgcc perl make libtool openssl-devel libaio libaio-devel librabbitmq-devel libedit-devel
+     yum install -y --skip-broken --nogpgcheck libedit-devel
+     yum install -y --nogpgcheck libcurl-devel
+     yum install -y --nogpgcheck curl-devel
+     yum install -y --skip-broken --nogpgcheck systemtap-sdt-devel
+     yum install -y --nogpgcheck rpm-sign
+     yum install -y --nogpgcheck gnupg
+#     yum install -y libaio 
+     cat /etc/redhat-release | grep "release 5"
+     if [ $? == 0 ] ; then
+   	yum install -y --skip-broken --nogpgcheck MariaDB-devel MariaDB-server
+     else
+     	wget $mariadbd_link
+     	tar xzvf $mariadbd_file -C /usr/ --strip-components=1
+     	cmake_flags+=" -DERRMSG=/usr/share/english/errmsg.sys -DEMBEDDED_LIB=/usr/lib/ "
+     fi
      cat /etc/redhat-release | grep "release 6"
      rs=$?
      cat /etc/redhat-release | grep "release 5"
@@ -80,7 +92,8 @@ if [ "$cmake" == "yes" ] ; then
    chmod -R a-w .
    chmod u+w _build
    cd _build
-   $cmake_cmd ..  $cmake_flags
+  # $cmake_cmd ..  $cmake_flags -DERRMSG=/usr/share/english/errmsg.sys -DEMBEDDED_LIB=/usr/lib/
+   $cmake_cmd ..  $cmake_flags 
    if [ -d ../coverity ] ; then
 	tar xzvf ../coverity/cov-analysis-linux*.tar.gz
 	export PATH=$PATH:`pwd`/cov-analysis-linux64-7.5.0/bin/
