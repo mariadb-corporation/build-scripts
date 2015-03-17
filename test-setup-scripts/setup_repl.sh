@@ -24,10 +24,14 @@ if [ "$image_type" != "RPM" ] && [ "$image_type" != "DEB" ] ; then
         exit 1
 fi
 
-ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "echo nameserver 192.168.122.1 >> /etc/resolv.conf"
+ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$IP_end "echo nameserver 192.168.122.1 >> /etc/resolv.conf"
+ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$IP_end "echo nameserver 8.8.8.4 >> /etc/resolv.conf"
 x=`expr $IP_end + $N - 1`
 for i in $(seq $IP_end $x)
 do
+    ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "echo nameserver 192.168.122.1 >> /etc/resolv.conf"
+    ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "echo nameserver 8.8.8.4 >> /etc/resolv.conf"
+
     if [ "$i" != "$IP_end" ] ; then
         if [ "$image_type" != "RPM" ] ; then
                 scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/apt_files-$MariaDBVersion/$image_name/* root@192.168.122.$i:/etc/apt/sources.list.d/
@@ -69,6 +73,8 @@ do
     ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'iptables -I INPUT -p tcp --dport 4442 -j ACCEPT -m state --state NEW'
     ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'iptables -I INPUT -p tcp -m tcp --dport 6444 -j ACCEPT'
     ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'iptables -I INPUT -p tcp --dport 6444 -j ACCEPT -m state --state NEW'
+    ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'iptables -I INPUT -p tcp -m tcp --dport 5306 -j ACCEPT'
+    ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'iptables -I INPUT -p tcp --dport 5306 -j ACCEPT -m state --state NEW'
     ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i '/etc/init.d/iptables save'
     ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i 'iptables save'
     ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i '/sbin/service iptables save'

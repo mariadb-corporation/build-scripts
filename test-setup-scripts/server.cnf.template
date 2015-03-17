@@ -10,7 +10,7 @@
 
 # this is only for the mysqld standalone daemon
 [mysqld]
-log-basename=master
+log-basename=mar
 log-bin
 binlog-format=row
 server_id=###SERVER_ID###

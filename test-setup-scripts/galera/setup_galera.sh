@@ -26,10 +26,13 @@ if [ "$image_type" != "RPM" ] && [ "$image_type" != "DEB" ] ; then
        	echo "unknown image type: should be RPM or DEB"
         exit 1
 fi
-ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "echo nameserver 192.168.122.1 >> /etc/resolv.conf"
+ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$IP_end "echo nameserver 192.168.122.1 >> /etc/resolv.conf"
+ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$IP_end "echo nameserver 8.8.8.8 >> /etc/resolv.conf"
 x=`expr $IP_end + $N - 1`
 for i in $(seq $Master_IP $x)
 do
+	ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "echo nameserver 192.168.122.1 >> /etc/resolv.conf"
+	ssh -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@192.168.122.$i "echo nameserver 8.8.8.8 >> /etc/resolv.conf"
 	scp -r -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/test-setup-scripts/galera/* root@192.168.122.$i:/root/
         if [ "$image_type" != "RPM" ] ; then
 		scp -i /home/ec2-user/KEYS/$image_name -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no /home/ec2-user/apt_files-$MariaDBVersion/$image_name/* root@192.168.122.$i:/etc/apt/sources.list.d/

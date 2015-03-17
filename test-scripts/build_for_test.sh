@@ -16,3 +16,5 @@ else
 		/home/ec2-user/test-scripts/build_for_test_deb.sh
 	fi
 fi
+
+ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$BuildIP  "mkdir -p /usr/local/skysql/maxscale/Binlog_Service"

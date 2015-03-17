@@ -3,11 +3,12 @@
 cat /home/ec2-user/kvm/f | sudo socat STDIO UNIX-CONNECT:/tmp/socket2
 cat /home/ec2-user/kvm/f | sudo socat STDIO UNIX-CONNECT:/tmp/socket002
 
+. /home/ec2-user/kvm/qemu_cmd.sh
 sleep 10
 
 cp /home/ec2-user/kvm/images/$1.img /home/ec2-user/kvm/build_VMs/
 
-sudo qemu-system-x86_64 -hda /home/ec2-user/kvm/build_VMs/$1.img  -netdev user,id=user.0 -device e1000,netdev=user.0 -boot c  -m 2028 -smp 4 -device e1000,netdev=net0,mac=DE:AD:BE:EF:4A:02 -netdev tap,id=net0,script=/home/ec2-user/kvm/qemu-ifup --enable-kvm --nographic -qmp unix:/tmp/socket002,server,nowait &
+sudo $qemu_cmd -hda /home/ec2-user/kvm/build_VMs/$1.img  -netdev user,id=user.0 -device e1000,netdev=user.0 -boot c  -m 2028 -device e1000,netdev=net0,mac=DE:AD:BE:EF:4A:02 -netdev tap,id=net0,script=/home/ec2-user/kvm/qemu-ifup --nographic -qmp unix:/tmp/socket002,server,nowait &
 
 x=1
 while [  "$x" -ne 0 ]; do
