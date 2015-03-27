@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export maxdir="/usr/local/mariadb-maxscale"
+
 image_type=`cat /home/ec2-user/kvm/images/image_type | grep "$image".img | sed "s/$image.img//" | sed "s/ //g"`
 echo "image type is $image_type"
 
@@ -17,4 +19,4 @@ else
 	fi
 fi
 
-ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$BuildIP  "mkdir -p /usr/local/skysql/maxscale/Binlog_Service"
+ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$BuildIP  "mkdir -p $maxdir/Binlog_Service"

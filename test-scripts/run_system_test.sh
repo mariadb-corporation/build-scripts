@@ -22,11 +22,11 @@ if [ "$remote_test_machine" == "yes" ] ; then
  	res=$?
 else
 
-	. /usr/local/skysql/maxscale/system-test/set_env_f.sh $replicationIP $galeraIP
+	. ./set_env.sh $replicationIP $galeraIP
 
 #	/usr/local/skysql/maxscale/system-test/configure_maxscale.sh
 
-	/usr/local/skysql/maxscale/system-test/$test_name
+	./$test_name
 	res=$?
 fi
 

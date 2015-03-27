@@ -2,7 +2,7 @@
 
 set -x
 
-template_line=`cat /usr/local/skysql/maxscale/system-test/templates | grep $test_name`
+template_line=`cat $test_dir/templates | grep $test_name`
 a=( $template_line )
 template=${a[1]}
 
@@ -25,7 +25,7 @@ if [ -z $threads ] ; then
 fi
 
 
-cp /usr/local/skysql/maxscale/system-test/cnf/maxscale.cnf.template.$template MaxScale.cnf
+cp $test_dir/cnf/maxscale.cnf.template.$template MaxScale.cnf
 if [ $? -ne 0 ] ; then
 	echo "error copying maxscale.cnf file"
 	exit 1

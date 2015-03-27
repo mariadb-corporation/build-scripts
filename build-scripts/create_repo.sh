@@ -4,6 +4,13 @@ set -x
 
 destdir=$1
 sourcedir=$2
+
+arch="binary-amd64"
+uname -m | grep "x86_64"
+if [ $? -ne 0 ] ; then
+	arch="binary-ppc64el"
+fi
+
 rm -rf $destdir
 mkdir -p  $destdir/
 
@@ -40,26 +47,30 @@ if [ $z_res -eq 127 ] && [ $y_res -eq 127 ] ; then
         if [ $? -eq 0 ]; then
                 dist_name="saucy";
         fi
+        echo $ubuntu_ver | grep "14.10"
+        if [ $? -eq 0 ]; then
+                dist_name="utopic";
+        fi
 
 	if [ -z "$dist_name" ]; then
 		dist_name="unknown"
 	fi
-	mkdir -p dists/$dist_name/main/binary-amd64/
-	cp $sourcedir/* dists/$dist_name/main/binary-amd64/
+	mkdir -p dists/$dist_name/main/$arch/
+	cp $sourcedir/* dists/$dist_name/main/$arch/
 	apt-get update
 	apt-get install -y dpkg-dev
-	dpkg-scanpackages dists/$dist_name/main/binary-amd64/  /dev/null | gzip -9c > dists/$dist_name/main/binary-amd64/Packages.gz
-	gunzip -c dists/$dist_name/main/binary-amd64/Packages.gz > dists/$dist_name/main/binary-amd64/Packages
-#	echo "Archive: main" > dists/$dist_name/main/binary-amd64/Release
-#	echo "Suite: main" >> dists/$dist_name/main/binary-amd64/Release
-	echo "Components: main" >> dists/$dist_name/main/binary-amd64/Release
-	echo "Codename: $dist_name" >> dists/$dist_name/main/binary-amd64/Release
-	echo "Origin: SkySQL" >> dists/$dist_name/main/binary-amd64/Release
-	echo "Label: SkySQL MariaDB-Manager repository" >> dists/$dist_name/main/binary-amd64/Release
-	echo "Architectures: amd64" >> dists/$dist_name/main/binary-amd64/Release
-	echo "Description:  SkySQL MariaDB-Manager" >> dists/$dist_name/main/binary-amd64/Release
-	cp dists/$dist_name/main/binary-amd64/Release dists/$dist_name/Release
-#	cp dists/$dist_name/main/binary-amd64/Packages.gz dists/$dist_name
+	dpkg-scanpackages dists/$dist_name/main/$arch/  /dev/null | gzip -9c > dists/$dist_name/main/$arch/Packages.gz
+	gunzip -c dists/$dist_name/main/$arch/Packages.gz > dists/$dist_name/main/$arch/Packages
+#	echo "Archive: main" > dists/$dist_name/main/$arch/Release
+#	echo "Suite: main" >> dists/$dist_name/main/$arch/Release
+	echo "Components: main" >> dists/$dist_name/main/$arch/Release
+	echo "Codename: $dist_name" >> dists/$dist_name/main/$arch/Release
+	echo "Origin: SkySQL" >> dists/$dist_name/main/$arch/Release
+	echo "Label: SkySQL MariaDB-Manager repository" >> dists/$dist_name/main/$arch/Release
+	echo "Architectures: amd64" >> dists/$dist_name/main/$arch/Release
+	echo "Description:  SkySQL MariaDB-Manager" >> dists/$dist_name/main/$arch/Release
+	cp dists/$dist_name/main/$arch/Release dists/$dist_name/Release
+#	cp dists/$dist_name/main/$arch/Packages.gz dists/$dist_name
 	apt-ftparchive release dists/$dist_name/ >> dists/$dist_name/Release
 
 	gpg -abs -o  dists/$dist_name/Release.gpg dists/$dist_name/Release 

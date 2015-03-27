@@ -2,7 +2,7 @@ build_name="$image-$MariaDBVersion"
 echo Build name is $build_name
 cmake . -DBUILDNAME=$build_name
 make 
-. ./set_env_f.sh $replicationIP $galeraIP
+. ./set_env.sh $replicationIP $galeraIP
 ctest -VV -D Nightly 
 #--track $image
 #ctest -VV --track $image
@@ -14,3 +14,5 @@ rm -rf $report_dir/*
 mkdir -p $report_dir
 
 mv LOGS/* $report_dir
+chmod a+r -R  $report_dir
+

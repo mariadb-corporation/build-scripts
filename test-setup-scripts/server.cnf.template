@@ -1,3 +1,4 @@
+
 #
 # These groups are read by MariaDB server.
 # Use it for options that only the server (but not clients) should see
@@ -12,9 +13,10 @@
 [mysqld]
 log-basename=mar
 log-bin
-binlog-format=row
+#binlog-format=row
+binlog-format=STATEMENT
 server_id=###SERVER_ID###
-
+#slave_parallel_threads=2
 
 # this is only for embedded server
 [embedded]
