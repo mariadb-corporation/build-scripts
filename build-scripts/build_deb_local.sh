@@ -28,8 +28,9 @@ if [ "$cmake" == "yes" ] ; then
   apt-get install -y --force-yes gcc g++ ncurses-dev bison build-essential libssl-dev libaio-dev perl make libtool 
   apt-get install -y --force-yes librabbitmq-dev
   apt-get install -y --force-yes libcurl4-openssl-dev
+  apt-get install -y --force-yes libpcre3-dev
 
-  wget $mariadbd_link
+  wget --retry-connrefused $mariadbd_link
   tar xzvf $mariadbd_file -C /usr/ --strip-components=1
 
 #  cmake . --debug-output $cmake_flags

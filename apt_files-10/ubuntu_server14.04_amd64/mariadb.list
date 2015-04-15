@@ -1,0 +1,8 @@
+#deb http://repo.percona.com/apt trusty main
+#deb-src http://repo.percona.com/apt trusty main
+
+# http://mariadb.org/mariadb/repositories/
+deb http://mirror.netinch.com/pub/mariadb/repo/10.0/ubuntu trusty main
+#deb-src http://mirror.netinch.com/pub/mariadb/repo/10.0/ubuntu trusty main
+
+#deb http://ftp.fi.debian.org/debian/ jessie main

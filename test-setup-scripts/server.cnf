@@ -15,7 +15,7 @@ log-basename=mar
 log-bin
 #binlog-format=row
 binlog-format=STATEMENT
-server_id=119
+server_id=139
 #slave_parallel_threads=2
 
 # this is only for embedded server

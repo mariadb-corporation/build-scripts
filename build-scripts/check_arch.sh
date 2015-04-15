@@ -17,10 +17,10 @@ if [ $? -ne 0 ] ; then
   fi
 
   if [ $res != 0 ] ; then
-    export mariadbd_link="https://downloads.mariadb.org/f/mariadb-5.5.42/bintar-linux-glibc_214-x86_64/mariadb-5.5.42-linux-glibc_214-x86_64.tar.gz"
+    export mariadbd_link="http://jenkins.engskysql.com/x/mariadb-5.5.42-linux-glibc_214-x86_64.tar.gz"
     export mariadbd_file="mariadb-5.5.42-linux-glibc_214-x86_64.tar.gz"
   else 
-    export mariadbd_link="https://downloads.mariadb.org/interstitial/mariadb-5.5.42/bintar-linux-x86_64/mariadb-5.5.42-linux-x86_64.tar.gz"
+    export mariadbd_link="http://jenkins.engskysql.com/x/mariadb-5.5.42-linux-x86_64.tar.gz"
     export mariadbd_file="mariadb-5.5.42-linux-x86_64.tar.gz"
   fi
 else

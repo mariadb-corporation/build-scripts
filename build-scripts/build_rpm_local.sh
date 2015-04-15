@@ -44,6 +44,7 @@ if [ "$cmake" == "yes" ] ; then
      zypper -n install gcc gcc-c++ ncurses-devel bison glibc-devel cmake libgcc_s1 perl make libtool libopenssl-devel libaio libaio-devel 
      zypper -n install librabbitmq-devel
      zypper -n install libcurl-devel
+     zypper -n install pcre-devel
      cat /etc/*-release | grep "SUSE Linux Enterprise Server 11"
      if [ $? != 0 ] ; then 
        zypper -n install libedit-devel
@@ -66,6 +67,7 @@ if [ "$cmake" == "yes" ] ; then
      yum install -y --skip-broken --nogpgcheck systemtap-sdt-devel
      yum install -y --nogpgcheck rpm-sign
      yum install -y --nogpgcheck gnupg
+     yum install -y --nogpgcheck pcre-devel
 #     yum install -y libaio 
      cat /etc/redhat-release | grep "release 5"
      if [ $? == 0 ] ; then
