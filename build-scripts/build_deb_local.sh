@@ -44,8 +44,8 @@ if [ "$cmake" == "yes" ] ; then
   cd _build
   cmake ..  $cmake_flags -DERRMSG=/usr/share/english/errmsg.sys -DEMBEDDED_LIB=/usr/lib/
    if [ -d ../coverity ] ; then
-        tar xzvf ../coverity/cov-analysis-linux*.tar.gz
-        export PATH=$PATH:`pwd`/cov-analysis-linux64-7.5.0/bin/
+        tar xzvf ../coverity/coverity_tool.tgz
+        export PATH=$PATH:`pwd`/cov-analysis-linux64-7.6.0/bin/
         cov-build --dir cov-int make
         tar czvf maxscale.tgz cov-int
    else

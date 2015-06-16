@@ -1,10 +1,16 @@
 #!/bin/bash
 
 # $1 - image 
+# $2 - (optional) URL to repo configuration package (without .deb or .rpm)
 
 set -x
 
 image=$1
+url_repo=$2
+
+if [ "$url_repo" == "" ] ; then
+	url_repo="http://downloads.mariadb.com/software/mariadb-maxscale/configure-maxscale-repo-0.1.2"
+fi
 
 orig_image=$image
 echo "image: $image"
@@ -21,7 +27,7 @@ if [ "$image_type" != "RPM" ] && [ "$image_type" != "DEB" ] ; then
         exit 1
 else
         if [ "$image_type" == "RPM" ] ; then
-		ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "rpm -i http://downloads.mariadb.com/software/mariadb-maxscale/configure-maxscale-repo-0.1.1.rpm"
+		ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "rpm -U $url_repo.rpm"
 #                ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "echo -e \"portaluser\ntesting\" | /usr/local/mariadb-maxscale-setup/configure-maxscale-repo"
 
 		ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "zypper --version"
@@ -31,8 +37,8 @@ else
 			ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "zypper -n install maxscale"
 		fi
 	else
-         	ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "apt-get update; apt-get -y --force-yes install apt-transport-https"
-		ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "wget http://downloads.mariadb.com/software/mariadb-maxscale/configure-maxscale-repo-0.1.1.deb ; dpkg -i configure-maxscale-repo-0.1.1.deb"
+#         	ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "apt-get update; apt-get -y --force-yes install apt-transport-https"
+		ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "wget $url_repo.deb ; dpkg -i configure-maxscale-repo-0.1.*.deb"
 #                ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "echo -e \"portaluser\ntesting\" | /usr/local/mariadb-maxscale-setup/configure-maxscale-repo"
                 ssh -i /home/ec2-user/KEYS/$image -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$IP "apt-get update; apt-get -y --force-yes install maxscale"
 	fi

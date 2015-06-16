@@ -21,12 +21,12 @@ if [ "$remote_test_machine" == "yes" ] ; then
 	ssh -i /home/ec2-user/KEYS/$key  -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@$test_machine_ip /root/run_system_test_local.sh $test_name $replicationIP $galeraIP
  	res=$?
 else
-
-	. ./set_env.sh $replicationIP $galeraIP
-
+	echo "set env variables"
+	.  /usr/local/mariadb-maxscale/system-test/set_env.sh $replicationIP $galeraIP
+	echo "binlog dir $maxscale_binlog_dir"
 #	/usr/local/skysql/maxscale/system-test/configure_maxscale.sh
-
-	./$test_name
+	echo "Running test"
+	/usr/local/mariadb-maxscale/system-test/$test_name
 	res=$?
 fi
 

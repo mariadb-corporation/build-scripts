@@ -65,10 +65,18 @@ if [ $z_res -eq 127 ] && [ $y_res -eq 127 ] ; then
 #	echo "Suite: main" >> dists/$dist_name/main/$arch/Release
 	echo "Components: main" >> dists/$dist_name/main/$arch/Release
 	echo "Codename: $dist_name" >> dists/$dist_name/main/$arch/Release
-	echo "Origin: SkySQL" >> dists/$dist_name/main/$arch/Release
-	echo "Label: SkySQL MariaDB-Manager repository" >> dists/$dist_name/main/$arch/Release
-	echo "Architectures: amd64" >> dists/$dist_name/main/$arch/Release
-	echo "Description:  SkySQL MariaDB-Manager" >> dists/$dist_name/main/$arch/Release
+	echo "Origin: MariaDB" >> dists/$dist_name/main/$arch/Release
+	echo "Label: MariaDB Maxscale repository" >> dists/$dist_name/main/$arch/Release
+	uname -m | grep "x86_64"
+	if [ $? -eq 0 ] ; then
+ 		echo "Architectures: amd64 i386" >> dists/$dist_name/main/$arch/Release
+		mkdir -p dists/$dist_name/main/binary-i386/
+		dpkg-scanpackages dists/$dist_name/main/binary-i386/  /dev/null | gzip -9c > dists/$dist_name/main/binary-i386/Packages.gz
+	        gunzip -c dists/$dist_name/main/binary-i386/Packages.gz > dists/$dist_name/main/binary-i386/Packages
+	else 
+		 echo "Architectures: ppc64el" >> dists/$dist_name/main/$arch/Release
+	fi
+	echo "Description:  MariaDB MaxScale" >> dists/$dist_name/main/$arch/Release
 	cp dists/$dist_name/main/$arch/Release dists/$dist_name/Release
 #	cp dists/$dist_name/main/$arch/Packages.gz dists/$dist_name
 	apt-ftparchive release dists/$dist_name/ >> dists/$dist_name/Release
